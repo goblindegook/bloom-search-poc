@@ -59,6 +59,8 @@ writeMsgPack(join('public', 'bloom-search.msgpack'), bloomSearch.index)
 // Elasticlunr
 
 const elasticlunrIndex = elasticlunr()
+elasticlunr.clearStopWords()
+elasticlunr.addStopWords(stopwords)
 elasticlunrIndex.setRef('index')
 elasticlunrIndex.addField('file')
 elasticlunrIndex.addField('content')
