@@ -1,0 +1,28 @@
+{
+  "name": "bloom-search-poc",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "build:search": "node --experimental-json-modules scripts/search-index.mjs",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@types/elasticlunr": "^0.9.5",
+    "eslint": "^8.40.0",
+    "prettier": "^2.8.8",
+    "typescript": "^5.0.2",
+    "vite": "^4.3.2"
+  },
+  "dependencies": {
+    "@msgpack/msgpack": "^3.0.0-beta2",
+    "@pacote/bloom-search": "^0.10.3",
+    "@types/lunr": "^2.3.4",
+    "elasticlunr": "^0.9.5",
+    "lunr": "^2.3.9",
+    "stemmer": "^2.0.1",
+    "stopwords-en": "^0.3.0"
+  }
+}
