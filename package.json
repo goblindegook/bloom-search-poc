@@ -22,8 +22,6 @@
     "@pacote/bloom-search": "^0.10.3",
     "@types/lunr": "^2.3.4",
     "elasticlunr": "^0.9.5",
-    "flexsearch": "^0.7.31",
-    "gzip-size": "^7.0.0",
     "lunr": "^2.3.9",
     "stemmer": "^2.0.1",
     "stopwords-en": "^0.3.0"

@@ -27,7 +27,5 @@ public/bloom-search.json
 public/bloom-search.msgpack
 public/elasticlunr.json
 public/elasticlunr.msgpack
-public/flexsearch.json
-public/flexsearch.msgpack
 public/lunr.json
 public/lunr.msgpack

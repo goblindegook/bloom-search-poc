@@ -5,8 +5,6 @@ type Store = Record<string, string>
 
 let store: Store
 let index: elasticlunr.Index<{}>
-let size = 0
-let gzippedSize = 0
 
 export async function getElasticlunr(): Promise<Search> {
   if (store == null || index == null) {
@@ -15,19 +13,13 @@ export async function getElasticlunr(): Promise<Search> {
     const raw = decode(buffer) as {
       store: Store
       index: elasticlunr.SerialisedIndexData<{}>
-      size: number
-      gzippedSize: number
     }
     store = raw.store
     index = elasticlunr.Index.load(raw.index)
-    size = raw.size
-    gzippedSize = raw.gzippedSize
   }
 
   return {
     search: (terms) =>
       index.search(terms).map((result: { ref: string }) => store[result.ref]),
-    size,
-    gzippedSize,
   }
 }
