@@ -25,19 +25,30 @@ async function searchHandler(event: Event): Promise<void> {
     const finish = Number(new Date())
     const latency = finish - start
 
-    renderSummary(`#${name}-summary`, results, latency)
+    renderSummary(
+      `#${name}-summary`,
+      index.size,
+      index.gzippedSize,
+      results,
+      latency
+    )
     renderResults(`#${name}-results`, results)
   })
 }
 
 function renderSummary(
   selector: string,
+  size: number,
+  gzippedSize: number,
   results: string[],
   latency: number
 ): void {
   const container = document.querySelector(selector)
   if (container) {
-    container.innerHTML = `${results.length} results, ${latency}ms`
+    container.innerHTML = `
+      ${size} bytes, ${gzippedSize} bytes gzipped<br>
+      ${results.length} results, ${latency}ms
+    `
   }
 }
 
