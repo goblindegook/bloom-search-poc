@@ -4,10 +4,11 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
+    "compatibility": "cp compatibility/elasticlunr.js node_modules/elasticlunr/elasticlunr.js",
+    "dev": "npm run compatibility && vite",
+    "build": "npm run compatibility && tsc && vite build",
     "build:search": "node --experimental-json-modules scripts/search-index.mjs",
-    "preview": "vite preview"
+    "preview": "npm run compatibility && vite preview"
   },
   "devDependencies": {
     "@types/elasticlunr": "^0.9.5",

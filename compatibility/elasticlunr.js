@@ -57,7 +57,7 @@
  * @return {elasticlunr.Index}
  *
  */
-export var elasticlunr = function (config) {
+var elasticlunr = function (config) {
   var idx = new elasticlunr.Index()
 
   idx.pipeline.add(
@@ -72,10 +72,6 @@ export var elasticlunr = function (config) {
 }
 
 elasticlunr.version = '0.9.5'
-
-// only used this to make elasticlunr.js compatible with lunr-languages
-// this is a trick to define a global alias of elasticlunr
-const lunr = elasticlunr
 
 /*!
  * elasticlunr.utils
@@ -2260,3 +2256,5 @@ elasticlunr.Configuration.prototype.get = function () {
 elasticlunr.Configuration.prototype.reset = function () {
   this.config = {}
 }
+
+module.exports = elasticlunr

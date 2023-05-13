@@ -1,6 +1,5 @@
 import { decode } from '@msgpack/msgpack'
-import { elasticlunr } from '../compatibility/elasticlunr.js'
-import { SerialisedIndexData } from 'elasticlunr'
+import elasticlunr from 'elasticlunr'
 
 type Store = Record<string, string>
 
@@ -13,7 +12,7 @@ export async function getElasticlunr(): Promise<Search> {
     const buffer = await response.arrayBuffer()
     const raw = decode(buffer) as {
       store: Store
-      index: SerialisedIndexData<{}>
+      index: elasticlunr.SerialisedIndexData<{}>
     }
     store = raw.store
     index = elasticlunr.Index.load(raw.index)
