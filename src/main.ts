@@ -13,14 +13,32 @@ input.addEventListener('click', searchHandler)
 async function searchHandler(event: Event): Promise<void> {
   const terms = (event.target as HTMLInputElement).value || ''
 
-  const bloomSearch = await getBloomSearch()
-  renderResults('#bloom-search-results', bloomSearch.search(terms))
+  const searches: Record<string, Search> = {
+    'bloom-search': await getBloomSearch(),
+    elasticlunr: await getElasticlunr(),
+    lunr: await getLunr(),
+  }
 
-  const elasticlunr = await getElasticlunr()
-  renderResults('#elasticlunr-results', elasticlunr.search(terms))
+  Object.entries(searches).forEach(([name, index]) => {
+    const start = Number(new Date())
+    const results = index.search(terms)
+    const finish = Number(new Date())
+    const latency = finish - start
 
-  const lunr = await getLunr()
-  renderResults('#lunr-results', lunr.search(terms))
+    renderSummary(`#${name}-summary`, results, latency)
+    renderResults(`#${name}-results`, results)
+  })
+}
+
+function renderSummary(
+  selector: string,
+  results: string[],
+  latency: number
+): void {
+  const container = document.querySelector(selector)
+  if (container) {
+    container.innerHTML = `${results.length} results, ${latency}ms`
+  }
 }
 
 function renderResults(selector: string, files: string[]): void {
