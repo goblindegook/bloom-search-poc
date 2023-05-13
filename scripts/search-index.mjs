@@ -85,6 +85,7 @@ writeMsgPack(join('public', 'elasticlunr.msgpack'), {
 // Lunr
 
 const lunrIndex = lunr(function () {
+  lunr.generateStopWordFilter(stopwords)
   this.ref('index')
   this.field('file', { boost: 2 })
   this.field('content')

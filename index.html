@@ -4,10 +4,32 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + TS</title>
+    <title>Static Site Search</title>
   </head>
   <body>
-    <div id="app"></div>
+    <main id="app">
+      <h1>Static Site Search</h1>
+      <form>
+        <input
+          type="search"
+          name="search"
+          id="search"
+          placeholder="Search terms"
+        />
+      </form>
+      <section>
+        <h2>Bloom Search</h2>
+        <ol id="bloom-search-results"></ol>
+      </section>
+      <section>
+        <h2>Elasticlunr</h2>
+        <ol id="elasticlunr-results"></ol>
+      </section>
+      <section>
+        <h2>Lunr</h2>
+        <ol id="lunr-results"></ol>
+      </section>
+    </main>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
