@@ -9,6 +9,11 @@ import lunr from 'lunr'
 import { encode } from '@msgpack/msgpack'
 import { gzipSizeSync } from 'gzip-size'
 
+function writeIndices(name, data) {
+  writeJson(join('public', `${name}.json`), data)
+  writeMsgPack(join('public', `${name}.msgpack`), data)
+}
+
 function writeJson(path, data) {
   const serializedData = JSON.stringify(data)
   writeFileSync(path, serializedData, { encoding: 'utf8' })
@@ -62,10 +67,7 @@ documents.forEach((document, index) => {
   console.log(`[Bloom Search] Indexed ${document.file} (${latency}ms)`)
 })
 
-writeJson(join('public', 'bloom-search.json'), { index: bloomSearch.index })
-writeMsgPack(join('public', 'bloom-search.msgpack'), {
-  index: bloomSearch.index,
-})
+writeIndices('bloom-search', { index: bloomSearch.index })
 
 // Elasticlunr
 
@@ -84,14 +86,7 @@ documents.forEach((document, index) => {
   console.log(`[Elasticlunr] Indexed ${document.file} (${latency}ms)`)
 })
 
-writeJson(join('public', 'elasticlunr.json'), {
-  store,
-  index: elasticlunrIndex,
-})
-writeMsgPack(join('public', 'elasticlunr.msgpack'), {
-  store,
-  index: elasticlunrIndex,
-})
+writeIndices('elasticlunr', { store, index: elasticlunrIndex })
 
 // Lunr
 
@@ -109,5 +104,4 @@ const lunrIndex = lunr(function () {
   })
 })
 
-writeJson(join('public', 'lunr.json'), { store, index: lunrIndex })
-writeMsgPack(join('public', 'lunr.msgpack'), { store, index: lunrIndex })
+writeIndices('lunr', { store, index: lunrIndex })

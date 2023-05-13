@@ -1,19 +1,16 @@
-import { decode } from '@msgpack/msgpack'
-import elasticlunr from 'elasticlunr'
-import { RawIndex, Search, Store } from './search'
+import { Index, SerialisedIndexData } from 'elasticlunr'
+import { Search, Store, fetchIndex } from './search'
 
 let store: Store
-let index: elasticlunr.Index<{}>
+let index: Index<{}>
 let size: number
 let gzippedSize: number
 
 export async function getElasticlunr(): Promise<Search> {
   if (store == null || index == null) {
-    const response = await fetch('/bloom-search-poc/elasticlunr.msgpack')
-    const buffer = await response.arrayBuffer()
-    const raw = decode(buffer) as RawIndex<elasticlunr.SerialisedIndexData<{}>>
+    const raw = await fetchIndex<SerialisedIndexData<{}>>('elasticlunr')
     store = raw.store
-    index = elasticlunr.Index.load(raw.index)
+    index = Index.load(raw.index)
     size = raw.size
     gzippedSize = raw.gzippedSize
   }
