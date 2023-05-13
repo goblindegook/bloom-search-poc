@@ -5,7 +5,6 @@ import { stemmer } from 'stemmer'
 import stopwords from 'stopwords-en' assert { type: 'json' }
 import { BloomSearch } from '@pacote/bloom-search'
 import elasticlunr from 'elasticlunr'
-import FlexSearch from 'flexsearch'
 import lunr from 'lunr'
 import { encode } from '@msgpack/msgpack'
 import { gzipSizeSync } from 'gzip-size'
@@ -60,8 +59,10 @@ documents.forEach((document, index) => {
   console.log(`[Bloom Search] Indexed ${document.file} (${latency}ms)`)
 })
 
-writeJson(join('public', 'bloom-search.json'), bloomSearch.index)
-writeMsgPack(join('public', 'bloom-search.msgpack'), bloomSearch.index)
+writeJson(join('public', 'bloom-search.json'), { index: bloomSearch.index })
+writeMsgPack(join('public', 'bloom-search.msgpack'), {
+  index: bloomSearch.index,
+})
 
 // Elasticlunr
 
@@ -87,26 +88,6 @@ writeJson(join('public', 'elasticlunr.json'), {
 writeMsgPack(join('public', 'elasticlunr.msgpack'), {
   store,
   index: elasticlunrIndex,
-})
-
-// FlexSearch
-
-const flexSearchIndex = new FlexSearch.Index({ stemmer: 'en' })
-
-documents.forEach((document, index) => {
-  const start = new Date()
-  flexSearchIndex.add(index, document.content)
-  const latency = new Date() - start
-  console.log(`[FlexSearch] Indexed ${document.file} (${latency}ms)`)
-})
-
-writeJson(join('public', 'flexsearch.json'), {
-  store,
-  index: flexSearchIndex,
-})
-writeMsgPack(join('public', 'flexsearch.msgpack'), {
-  store,
-  index: flexSearchIndex,
 })
 
 // Lunr

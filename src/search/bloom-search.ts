@@ -1,32 +1,27 @@
 import { BloomSearch, DocumentIndex } from '@pacote/bloom-search'
 import { decode } from '@msgpack/msgpack'
 import { stemmer } from 'stemmer'
+import { RawIndex, Search } from './search'
 
-type SearchResult = {
-  file: string
-}
+type Result = { file: string }
 
-let bs: BloomSearch<SearchResult, keyof SearchResult, never>
+let bs: BloomSearch<Result, keyof Result, never>
 
 export async function getBloomSearch(): Promise<Search> {
   if (bs == null) {
     const response = await fetch('/bloom-search-poc/bloom-search.msgpack')
     const buffer = await response.arrayBuffer()
-    const index = decode(buffer) as DocumentIndex<
-      SearchResult,
-      keyof SearchResult
-    >
-    console.log(index)
-    bs = new BloomSearch<SearchResult, keyof SearchResult, never>({
+    const raw = decode(buffer) as RawIndex<DocumentIndex<Result, keyof Result>>
+    bs = new BloomSearch<Result, keyof Result, never>({
       errorRate: 0.0001,
       fields: ['file'],
       summary: ['file'],
       stemmer,
     })
-    bs.load(index)
+    bs.load(raw.index)
   }
 
   return {
-    search: (terms) => bs.search(terms).map((result) => result.file),
+    search: async (terms) => bs.search(terms).map((result) => result.file),
   }
 }

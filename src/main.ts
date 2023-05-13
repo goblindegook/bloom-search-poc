@@ -2,6 +2,7 @@ import './style.css'
 import { getBloomSearch } from './search/bloom-search'
 import { getLunr } from './search/lunr'
 import { getElasticlunr } from './search/elasticlunr'
+import { Search } from './search/search'
 
 const input = document.querySelector('#search') as HTMLInputElement
 
@@ -19,9 +20,9 @@ async function searchHandler(event: Event): Promise<void> {
     lunr: await getLunr(),
   }
 
-  Object.entries(searches).forEach(([name, index]) => {
+  Object.entries(searches).forEach(async ([name, index]) => {
     const start = Number(new Date())
-    const results = index.search(terms)
+    const results = await index.search(terms)
     const finish = Number(new Date())
     const latency = finish - start
 
