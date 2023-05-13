@@ -21,10 +21,7 @@ function writeMsgPack(path, data) {
   const size = serializedData.byteLength
   const gzippedSize = gzipSizeSync(serializedData)
 
-  writeFileSync(
-    path,
-    encode(JSON.parse(JSON.stringify({ size, gzippedSize, ...data })))
-  )
+  writeFileSync(path, serializedData)
 
   console.log(
     `File written to ${path} (${size} bytes, gzipped ${gzippedSize} bytes)`
@@ -63,10 +60,8 @@ documents.forEach((document, index) => {
   console.log(`[Bloom Search] Indexed ${document.file} (${latency}ms)`)
 })
 
-writeJson(join('public', 'bloom-search.json'), { index: bloomSearch.index })
-writeMsgPack(join('public', 'bloom-search.msgpack'), {
-  index: bloomSearch.index,
-})
+writeJson(join('public', 'bloom-search.json'), bloomSearch.index)
+writeMsgPack(join('public', 'bloom-search.msgpack'), bloomSearch.index)
 
 // Elasticlunr
 
