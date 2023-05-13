@@ -20,7 +20,10 @@ function writeMsgPack(path, data) {
   const size = serializedData.byteLength
   const gzippedSize = gzipSizeSync(serializedData)
 
-  writeFileSync(path, serializedData)
+  writeFileSync(
+    path,
+    encode(JSON.parse(JSON.stringify({ size, gzippedSize, ...data })))
+  )
 
   console.log(
     `File written to ${path} (${size} bytes, gzipped ${gzippedSize} bytes)`

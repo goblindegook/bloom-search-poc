@@ -26,7 +26,13 @@ async function searchHandler(event: Event): Promise<void> {
     const finish = Number(new Date())
     const latency = finish - start
 
-    renderSummary(`#${name}-summary`, results, latency)
+    renderSummary(
+      `#${name}-summary`,
+      results,
+      latency,
+      index.size,
+      index.gzippedSize
+    )
     renderResults(`#${name}-results`, results)
   })
 }
@@ -34,12 +40,21 @@ async function searchHandler(event: Event): Promise<void> {
 function renderSummary(
   selector: string,
   results: string[],
-  latency: number
+  latency: number,
+  size: number,
+  gzippedSize: number
 ): void {
   const container = document.querySelector(selector)
   if (container) {
-    container.innerHTML = `${results.length} results, ${latency}ms`
+    container.innerHTML = `
+      ${kb(size)} (${kb(gzippedSize)} gzipped)<br>
+      ${results.length} results, ${latency}ms
+    `
   }
+}
+
+function kb(size: number): string {
+  return (size / 1024).toFixed(2) + ' KB'
 }
 
 function renderResults(selector: string, files: string[]): void {

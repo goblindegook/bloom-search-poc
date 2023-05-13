@@ -6,6 +6,8 @@ import { RawIndex, Search } from './search'
 type Result = { file: string }
 
 let bs: BloomSearch<Result, keyof Result, never>
+let size: number
+let gzippedSize: number
 
 export async function getBloomSearch(): Promise<Search> {
   if (bs == null) {
@@ -19,9 +21,13 @@ export async function getBloomSearch(): Promise<Search> {
       stemmer,
     })
     bs.load(raw.index)
+    size = raw.size
+    gzippedSize = raw.gzippedSize
   }
 
   return {
     search: async (terms) => bs.search(terms).map((result) => result.file),
+    size,
+    gzippedSize,
   }
 }
