@@ -5,9 +5,11 @@ let store: Store
 let index: lunr.Index
 let size: number
 let gzippedSize: number
+let isLoading = false
 
 export async function getLunr(): Promise<Search> {
-  if (store == null || index == null) {
+  if (!isLoading && (store == null || index == null)) {
+    isLoading = true
     const raw = await fetchIndex<object>('lunr')
     store = raw.store
     index = lunr.Index.load(raw.index)

@@ -5,9 +5,11 @@ let store: Store
 let index: Index<{}>
 let size: number
 let gzippedSize: number
+let isLoading = false
 
 export async function getElasticlunr(): Promise<Search> {
-  if (store == null || index == null) {
+  if (!isLoading && (store == null || index == null)) {
+    isLoading = true
     const raw = await fetchIndex<SerialisedIndexData<{}>>('elasticlunr')
     store = raw.store
     index = Index.load(raw.index)

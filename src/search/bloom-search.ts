@@ -7,9 +7,11 @@ type R = { file: string }
 let bs: BloomSearch<R, keyof R, never>
 let size: number
 let gzippedSize: number
+let isLoading = false
 
 export async function getBloomSearch(): Promise<Search> {
-  if (bs == null) {
+  if (!isLoading && bs == null) {
+    isLoading = true
     const raw = await fetchIndex<DocumentIndex<R, keyof R>>('bloom-search')
     bs = new BloomSearch<R, keyof R, never>({
       errorRate: 0.0001,
