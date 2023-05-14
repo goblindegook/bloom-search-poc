@@ -1,8 +1,9 @@
 import './style.css'
+import { Search } from './search/search'
 import { getBloomSearch } from './search/bloom-search'
 import { getLunr } from './search/lunr'
 import { getElasticlunr } from './search/elasticlunr'
-import { Search } from './search/search'
+import { getMiniSearch } from './search/minisearch'
 
 const input = document.querySelector('#search') as HTMLInputElement
 
@@ -18,6 +19,7 @@ async function searchHandler(event: Event): Promise<void> {
     'bloom-search': await getBloomSearch(),
     elasticlunr: await getElasticlunr(),
     lunr: await getLunr(),
+    minisearch: await getMiniSearch(),
   }
 
   Object.entries(searches).forEach(async ([name, index]) => {

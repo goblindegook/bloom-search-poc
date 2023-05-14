@@ -16,7 +16,7 @@ export async function getElasticlunr(): Promise<Search> {
   }
 
   return {
-    search: async (terms) =>
+    search: (terms) =>
       index.search(terms).map((result: { ref: string }) => store[result.ref]),
     size,
     gzippedSize,

@@ -23,7 +23,7 @@ export async function getBloomSearch(): Promise<Search> {
   }
 
   return {
-    search: async (terms) => bs.search(terms).map((result) => result.file),
+    search: (terms) => bs.search(terms).map((result) => result.file),
     size,
     gzippedSize,
   }

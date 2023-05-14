@@ -24,6 +24,7 @@
     "elasticlunr": "^0.9.5",
     "gzip-size": "^7.0.0",
     "lunr": "^2.3.9",
+    "minisearch": "^6.0.1",
     "stemmer": "^2.0.1",
     "stopwords-en": "^0.3.0"
   }

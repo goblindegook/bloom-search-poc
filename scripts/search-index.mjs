@@ -6,8 +6,16 @@ import stopwords from 'stopwords-en' assert { type: 'json' }
 import { BloomSearch } from '@pacote/bloom-search'
 import elasticlunr from 'elasticlunr'
 import lunr from 'lunr'
+import MiniSearch from 'minisearch'
 import { encode } from '@msgpack/msgpack'
 import { gzipSizeSync } from 'gzip-size'
+
+function reportLatency(prefix, callback) {
+  const start = new Date()
+  callback()
+  const latency = new Date() - start
+  console.log(`${prefix} (${latency}ms)`)
+}
 
 function writeIndices(name, data) {
   writeJson(join('public', `${name}.json`), data)
@@ -61,10 +69,9 @@ const bloomSearch = new BloomSearch({
 })
 
 documents.forEach((document, index) => {
-  const start = new Date()
-  bloomSearch.add(index, document)
-  const latency = new Date() - start
-  console.log(`[Bloom Search] Indexed ${document.file} (${latency}ms)`)
+  reportLatency(`[Bloom Search] Indexed ${document.file}`, () => {
+    bloomSearch.add(index, document)
+  })
 })
 
 writeIndices('bloom-search', { index: bloomSearch.index })
@@ -80,10 +87,9 @@ elasticlunrIndex.addField('content')
 elasticlunrIndex.saveDocument(false)
 
 documents.forEach((document, index) => {
-  const start = new Date()
-  elasticlunrIndex.addDoc({ index, ...document })
-  const latency = new Date() - start
-  console.log(`[Elasticlunr] Indexed ${document.file} (${latency}ms)`)
+  reportLatency(`[Elasticlunr] Indexed ${document.file}`, () => {
+    elasticlunrIndex.addDoc({ index, ...document })
+  })
 })
 
 writeIndices('elasticlunr', { store, index: elasticlunrIndex })
@@ -97,11 +103,28 @@ const lunrIndex = lunr(function () {
   this.field('content')
 
   documents.forEach((document, index) => {
-    const start = new Date()
-    this.add({ index, ...document })
-    const latency = new Date() - start
-    console.log(`[Lunr] Indexed ${document.file} (${latency}ms)`)
+    reportLatency(`[Lunr] Indexed ${document.file}`, () => {
+      this.add({ index, ...document })
+    })
   })
 })
 
 writeIndices('lunr', { store, index: lunrIndex })
+
+// MiniSearch
+
+const miniSearchIndex = new MiniSearch({
+  fields: ['file', 'content'],
+  storeFields: ['file'],
+  idField: 'file',
+  processTerm: (term) => {
+    const processedTerm = stemmer(term.toLowerCase())
+    return stopwords.includes(processedTerm) ? null : processedTerm
+  },
+})
+
+reportLatency('[MiniSearch] Indexed all documents', () => {
+  miniSearchIndex.addAll(documents)
+})
+
+writeIndices('minisearch', { index: miniSearchIndex })

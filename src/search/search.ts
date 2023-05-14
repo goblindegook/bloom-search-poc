@@ -1,7 +1,7 @@
 import { decode } from '@msgpack/msgpack'
 
 export interface Search {
-  search(terms: string): Promise<string[]>
+  search(terms: string): string[]
   size: number
   gzippedSize: number
 }

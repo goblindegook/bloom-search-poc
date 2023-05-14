@@ -16,8 +16,7 @@ export async function getLunr(): Promise<Search> {
   }
 
   return {
-    search: async (terms) =>
-      index.search(terms).map((result) => store[result.ref]),
+    search: (terms) => index.search(terms).map((result) => store[result.ref]),
     size,
     gzippedSize,
   }

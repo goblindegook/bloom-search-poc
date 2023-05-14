@@ -31,3 +31,7 @@ public/flexsearch.json
 public/flexsearch.msgpack
 public/lunr.json
 public/lunr.msgpack
+public/minisearch.json
+public/minisearch.msgpack
+public/wade.json
+public/wade.msgpack
