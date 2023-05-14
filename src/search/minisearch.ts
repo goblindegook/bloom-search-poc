@@ -1,4 +1,4 @@
-import MiniSearch from 'MiniSearch'
+import MiniSearch from 'minisearch'
 import { Search, fetchIndex } from './search'
 import { stemmer } from 'stemmer'
 
