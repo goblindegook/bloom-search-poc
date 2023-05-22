@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@msgpack/msgpack": "^3.0.0-beta2",
-    "@pacote/bloom-search": "^0.12.0",
+    "@pacote/bloom-search": "^0.13.0",
     "@types/lunr": "^2.3.4",
     "elasticlunr": "^0.9.5",
     "gzip-size": "^7.0.0",
