@@ -33,10 +33,11 @@ function App() {
   }
 
   return (
-    <div>
-      <div>
+    <>
+      <h1>Bloom Filter</h1>
+      <div class="config">
         <label>
-          Size
+          <span>Size</span>
           <input
             onChange={(event: any) => {
               n.value = Number(event.target.value)
@@ -47,7 +48,7 @@ function App() {
           />
         </label>
         <label>
-          Hashes
+          <span>Hashes</span>
           <input
             onChange={(event: any) => {
               hashes.value = Number(event.target.value)
@@ -58,7 +59,7 @@ function App() {
           />
         </label>
       </div>
-      <div>
+      <div class="add">
         <label>
           Add
           <input
@@ -77,10 +78,10 @@ function App() {
           />
         </label>
         <div class="last-word">
-          <div>{added.value.word}</div>
+          <>{added.value.word}</>
           <ul class="added-hashes">
             {added.value.hashes.map((value) => (
-              <li>{value}</li>
+              <li class="added-hash">{value}</li>
             ))}
           </ul>
         </div>
@@ -151,14 +152,14 @@ function App() {
       </label>
 
       {searched.value.word !== '' && (
-        <div>
+        <>
           {searched.value.hashes.every((index) => filter.value[index])
             ? 'Probably there.'
             : 'Definitely not there.'}
-        </div>
+        </>
       )}
-    </div>
+    </>
   )
 }
 
-render(<App />, document.getElementById('root')!)
+render(<App />, document.getElementById('app')!)

@@ -14,7 +14,49 @@
   -webkit-text-size-adjust: 100%;
 }
 
-.added-words {
+.config {
+  position: absolute;
+  right: 0;
+  top: 0;
+  padding: 2rem;
+}
+
+.config label {
+  display: block;
+}
+
+.config label span {
+  display: inline-block;
+  width: 40%;
+}
+
+.config label input {
+  display: inline-block;
+  width: 50%;
+}
+
+.add {
+}
+
+.last-word {
+  display: inline-block;
+}
+
+.added-hashes {
+  display: inline-block;
+}
+
+.added-hash {
+  display: inline-block;
+  margin-left: 0.25rem;
+}
+
+.added-hash::after {
+  content: ', ';
+}
+
+.added-hash:last-child::after {
+  content: '';
 }
 
 .added-word {
@@ -39,6 +81,8 @@
   display: grid;
   grid-template-columns: repeat(20, 1fr);
   gap: 0.5rem;
+  margin: 2rem auto;
+  padding: 0;
 }
 
 .location {
