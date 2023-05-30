@@ -5,10 +5,10 @@ import { signal } from '@preact/signals'
 import { hashLocations } from '@pacote/bloom-filter/src/hash'
 import cx from 'classnames'
 
-const n = signal<number>(100)
+const size = signal<number>(100)
 const hashes = signal<number>(3)
 const words = signal<string[]>([])
-const filter = signal<boolean[]>(Array(n.value).fill(false))
+const filter = signal<boolean[]>(Array(size.value).fill(false))
 const highlighted = signal<{ word: string; hashes: number[] }>({
   word: '',
   hashes: [],
@@ -37,11 +37,11 @@ const Input = ({ id, label, ...props }: InputProps) => (
 )
 
 function App() {
-  const computeHashes = hashLocations(n.value, hashes.value, 0)
+  const computeHashes = hashLocations(size.value, hashes.value, 0)
 
   const reset = () => {
     words.value = []
-    filter.value = Array(n.value).fill(false)
+    filter.value = Array(size.value).fill(false)
     highlighted.value = { word: '', hashes: [] }
   }
 
@@ -62,10 +62,10 @@ function App() {
             id="size"
             label="Size"
             onChange={(event: any) => {
-              n.value = Number(event.target.value)
+              size.value = Number(event.target.value)
               reset()
             }}
-            value={n}
+            value={size}
             type="number"
           />
           <Input
@@ -153,12 +153,12 @@ function App() {
                   searched.value = { word, hashes: [] }
                 }
               }}
-              class="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
+              class="block w-full p-4 pl-10 text-xl text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
             />
             {isWordSearched && (
               <div
                 class={cx(
-                  'text-white absolute right-2.5 bottom-2.5 font-medium rounded-lg text-sm px-4 py-2',
+                  'text-white absolute right-2.5 bottom-2.5 font-medium rounded-lg text-md px-4 py-2',
                   isWordFound ? 'bg-emerald-700' : 'bg-rose-700'
                 )}
               >
