@@ -18,6 +18,24 @@ const searched = signal<{ word: string; hashes: number[] }>({
   hashes: [],
 })
 
+type InputProps = React.JSX.HTMLAttributes<HTMLInputElement> & {
+  id: string
+  label: string
+}
+
+const Input = ({ id, label, ...props }: InputProps) => (
+  <div class="pb-6">
+    <label for={id} class="block mb-2 text-sm font-medium text-gray-900">
+      {label}
+    </label>
+    <input
+      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+      id={id}
+      {...props}
+    />
+  </div>
+)
+
 function App() {
   const computeHashes = hashLocations(n.value, hashes.value, 0)
 
@@ -39,67 +57,43 @@ function App() {
       </h1>
 
       <div class="grid grid-cols-4 gap-8">
-        <div>
-          <div class="pb-6">
-            <label
-              for="size"
-              class="block mb-2 text-xs font-medium text-gray-900"
-            >
-              Size
-            </label>
-            <input
-              id="size"
-              onChange={(event: any) => {
-                n.value = Number(event.target.value)
-                reset()
-              }}
-              value={n}
-              type="number"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-            />
-          </div>
-          <div class="pb-6">
-            <label
-              for="hashes"
-              class="block mb-2 text-xs font-medium text-gray-900"
-            >
-              Hashes
-            </label>
-            <input
-              id="hashes"
-              onChange={(event: any) => {
-                hashes.value = Number(event.target.value)
-                reset()
-              }}
-              value={hashes}
-              type="number"
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-            />
-          </div>
-          <div class="pb-6">
-            <label
-              for="add"
-              class={cx('block mb-2 text-sm font-medium text-gray-900')}
-            >
-              Add
-            </label>
-            <input
-              id="add"
-              onKeyUp={(event: any) => {
-                if (event.key === 'Enter') {
-                  const word = event.target.value
-                  const locations = computeHashes(word)
-                  words.value = words.value.concat(word)
-                  locations.forEach((location) => {
-                    filter.value[location] = true
-                  })
-                  highlighted.value = { word, hashes: locations }
-                  event.target.value = ''
-                }
-              }}
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-            />
-          </div>
+        <div class="bg-gray-100 p-8 rounded-lg shadow-sm">
+          <Input
+            id="size"
+            label="Size"
+            onChange={(event: any) => {
+              n.value = Number(event.target.value)
+              reset()
+            }}
+            value={n}
+            type="number"
+          />
+          <Input
+            id="hashes"
+            label="Hashes"
+            onChange={(event: any) => {
+              hashes.value = Number(event.target.value)
+              reset()
+            }}
+            value={hashes}
+            type="number"
+          />
+          <Input
+            id="add"
+            label="Add Text"
+            onKeyUp={(event: any) => {
+              if (event.key === 'Enter') {
+                const word = event.target.value
+                const locations = computeHashes(word)
+                words.value = words.value.concat(word)
+                locations.forEach((location) => {
+                  filter.value[location] = true
+                })
+                highlighted.value = { word, hashes: locations }
+                event.target.value = ''
+              }
+            }}
+          />
 
           <ul>
             {words.value.map((word) => (
@@ -122,16 +116,6 @@ function App() {
                 >
                   {word}
                 </button>
-                {/* <button
-              onClick={(event) => {
-                words.value = words.value
-                  .slice(0, index)
-                  .concat(words.value.slice(index + 1, words.value.length))
-                event.preventDefault()
-              }}
-            >
-              X
-            </button> */}
               </li>
             ))}
           </ul>
