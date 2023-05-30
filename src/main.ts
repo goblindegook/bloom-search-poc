@@ -66,8 +66,8 @@ function renderResults(selector: string, files: string[]): void {
       (html, file) =>
         html +
         `<li>
-          <article class="search-result-single">
-            <a href="/bloom-search-poc/documents/${file}">${file}</a>
+          <article>
+            <a href="/bloom-search-poc/documents/${file}" class="text-blue-600">${file}</a>
           </article>
         </li>`,
       ''
