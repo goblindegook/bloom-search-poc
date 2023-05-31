@@ -4,6 +4,8 @@ import { render } from 'preact'
 import { signal } from '@preact/signals'
 import { hashLocations } from '@pacote/bloom-filter/src/hash'
 import cx from 'classnames'
+import { Input } from '../components/Input'
+import { Search } from '../components/Search'
 
 const size = signal<number>(100)
 const hashes = signal<number>(3)
@@ -17,24 +19,6 @@ const searched = signal<{ word: string; hashes: number[] }>({
   word: '',
   hashes: [],
 })
-
-type InputProps = React.JSX.HTMLAttributes<HTMLInputElement> & {
-  id: string
-  label: string
-}
-
-const Input = ({ id, label, ...props }: InputProps) => (
-  <div class="pb-6">
-    <label for={id} class="block mb-2 text-sm font-medium text-gray-900">
-      {label}
-    </label>
-    <input
-      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-      id={id}
-      {...props}
-    />
-  </div>
-)
 
 function App() {
   const computeHashes = hashLocations(size.value, hashes.value, 0)
@@ -122,39 +106,18 @@ function App() {
         </div>
 
         <div class="col-span-3">
-          <div class="mb-6 relative">
-            <label for="search" class="sr-only">
-              Search
-            </label>
-            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-              <svg
-                aria-hidden="true"
-                class="w-5 h-5 text-gray-500"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                ></path>
-              </svg>
-            </div>
-            <input
-              id="search"
-              onKeyUp={(event: any) => {
-                const word = event.target.value
-                if (word.length) {
-                  searched.value = { word, hashes: computeHashes(word) }
-                } else {
-                  searched.value = { word, hashes: [] }
-                }
-              }}
-              class="block w-full p-4 pl-10 text-xl text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
-            />
+          <Search
+            id="search"
+            label="Search"
+            onKeyUp={(event: any) => {
+              const word = event.target.value
+              if (word.length) {
+                searched.value = { word, hashes: computeHashes(word) }
+              } else {
+                searched.value = { word, hashes: [] }
+              }
+            }}
+          >
             {isWordSearched && (
               <div
                 class={cx(
@@ -165,7 +128,7 @@ function App() {
                 {isWordFound ? 'Probably found' : 'Definitely missing'}
               </div>
             )}
-          </div>
+          </Search>
 
           <ul class="grid grid-cols-10 justify-evenly justify-items-center gap-4 m-12">
             {filter.value.map((value, index) => {

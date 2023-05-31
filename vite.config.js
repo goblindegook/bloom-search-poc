@@ -8,7 +8,8 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html'),
-        nested: resolve(__dirname, 'bloom-filter.html'),
+        bloomFilter: resolve(__dirname, 'bloom-filter.html'),
+        countingBloomFilter: resolve(__dirname, 'counting-bloom-filter.html'),
       },
       output: '',
     },
