@@ -3,6 +3,7 @@ export default {
   content: [
     './index.html',
     './bloom-filter.html',
+    './counting-bloom-filter.html',
     './src/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {

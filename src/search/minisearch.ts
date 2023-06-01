@@ -1,5 +1,5 @@
 import MiniSearch from 'minisearch'
-import { Search, fetchIndex } from './search'
+import { SearchBackend, fetchIndex } from './search'
 import { stemmer } from 'stemmer'
 
 let index: MiniSearch
@@ -7,7 +7,7 @@ let size: number
 let gzippedSize: number
 let isLoading = false
 
-export async function getMiniSearch(): Promise<Search> {
+export async function getMiniSearch(): Promise<SearchBackend> {
   if (!isLoading && index == null) {
     isLoading = true
     const raw = await fetchIndex<object>('minisearch')

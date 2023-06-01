@@ -1,5 +1,5 @@
 import lunr from 'lunr'
-import { Search, Store, fetchIndex } from './search'
+import { SearchBackend, Store, fetchIndex } from './search'
 
 let store: Store
 let index: lunr.Index
@@ -7,7 +7,7 @@ let size: number
 let gzippedSize: number
 let isLoading = false
 
-export async function getLunr(): Promise<Search> {
+export async function getLunr(): Promise<SearchBackend> {
   if (!isLoading && (store == null || index == null)) {
     isLoading = true
     const raw = await fetchIndex<object>('lunr')

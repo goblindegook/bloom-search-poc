@@ -1,6 +1,6 @@
 import { decode } from '@msgpack/msgpack'
 
-export interface Search {
+export interface SearchBackend {
   search(terms: string): string[]
   size: number
   gzippedSize: number

@@ -1,18 +1,16 @@
 import { ComponentChildren } from 'preact'
-import React from 'preact/compat'
+import React, { HTMLAttributes } from 'preact/compat'
 
-type SearchProps = {
-  id: string
+type SearchProps = HTMLAttributes<HTMLInputElement> & {
   label: string
-  onKeyUp: (event: KeyboardEvent) => void
   children?: ComponentChildren
 }
 
-export const Search = (props: SearchProps) => {
+export const Search = ({ label, children, ...props }: SearchProps) => {
   return (
-    <div class="mb-6 relative">
+    <div class="mb-8 relative">
       <label for="search" class="sr-only">
-        {props.label}
+        {label}
       </label>
       <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
         <svg
@@ -32,11 +30,10 @@ export const Search = (props: SearchProps) => {
         </svg>
       </div>
       <input
-        id={props.id}
-        onKeyUp={props.onKeyUp}
         class="block w-full p-4 pl-10 text-xl text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
+        {...props}
       />
-      {props.children}
+      {children}
     </div>
   )
 }
