@@ -17,9 +17,13 @@ const NavigationItem = (props: NavigationItemProps) => (
 export const Navigation = () => (
   <nav class="border-b px-8 py-4 mb-4 bg-white shadow-sm">
     <ul>
-      <NavigationItem href="index.html">Comparison</NavigationItem>
-      <NavigationItem href="bloom-filter.html">Bloom Filter</NavigationItem>
-      <NavigationItem href="counting-bloom-filter.html">
+      <NavigationItem href="/bloom-search-poc/index.html">
+        Comparison
+      </NavigationItem>
+      <NavigationItem href="/bloom-search-poc/bloom-filter.html">
+        Bloom Filter
+      </NavigationItem>
+      <NavigationItem href="/bloom-search-poc/counting-bloom-filter.html">
         Counting Bloom Filter
       </NavigationItem>
     </ul>

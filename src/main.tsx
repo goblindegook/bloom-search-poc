@@ -40,6 +40,7 @@ function App() {
         <Search
           id="search"
           label="Search"
+          disabled={backends.value.some(({ isLoading }) => isLoading)}
           onKeyUp={async (event: any) => {
             const terms = event.target?.value ?? ''
 
@@ -84,7 +85,7 @@ function App() {
                           <li key={file}>
                             <article>
                               <a
-                                href="/bloom-search-poc/documents/${file}"
+                                href={`/bloom-search-poc/documents/${file}`}
                                 class="text-blue-600"
                               >
                                 {file}
