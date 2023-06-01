@@ -1,14 +1,14 @@
 import './style.css'
 import React, { useEffect } from 'preact/compat'
 import { render } from 'preact'
-import { Search } from './components/Search'
+import { Search } from '../components/Search'
 import { signal } from '@preact/signals'
-import { getBloomSearch } from './search/bloom-search'
-import { getElasticlunr } from './search/elasticlunr'
-import { getLunr } from './search/lunr'
-import { getMiniSearch } from './search/minisearch'
-import { Navigation } from './components/Navigation'
-import { SearchBackend } from './search/search'
+import { getBloomSearch } from './backends/bloom-search'
+import { getElasticlunr } from './backends/elasticlunr'
+import { getLunr } from './backends/lunr'
+import { getMiniSearch } from './backends/minisearch'
+import { Navigation } from '../components/Navigation'
+import { SearchBackend } from './backends/search'
 
 const latency = signal<Record<string, number>>({})
 const results = signal<Record<string, string[]>>({})
@@ -47,6 +47,7 @@ function App() {
             backends.value.forEach(async ({ name, search }) => {
               if (terms.length === 0) {
                 results.value = {}
+                return
               }
 
               const start = Number(new Date())
