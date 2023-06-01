@@ -17,9 +17,14 @@ export async function getMiniSearch(): Promise<SearchBackend> {
     })
     size = raw.size
     gzippedSize = raw.gzippedSize
+    isLoading = false
   }
 
   return {
+    isLoading,
+    name: 'minisearch',
+    title: 'MiniSearch',
+    url: 'https://www.npmjs.com/package/minisearch',
     search: (terms) => index.search(terms).map((result) => result.id),
     size,
     gzippedSize,

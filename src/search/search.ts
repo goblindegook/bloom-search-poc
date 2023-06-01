@@ -1,9 +1,13 @@
 import { decode } from '@msgpack/msgpack'
 
 export interface SearchBackend {
-  search(terms: string): string[]
+  isLoading: boolean
+  name: string
+  title: string
+  url: string
   size: number
   gzippedSize: number
+  search(terms: string): string[]
 }
 
 export type Store = Record<string, string>

@@ -15,9 +15,14 @@ export async function getElasticlunr(): Promise<SearchBackend> {
     index = Index.load(raw.index)
     size = raw.size
     gzippedSize = raw.gzippedSize
+    isLoading = false
   }
 
   return {
+    isLoading,
+    name: 'elasticlunr',
+    title: 'Elasticlunr',
+    url: 'https://www.npmjs.com/package/elasticlunr',
     search: (terms) =>
       index.search(terms).map((result: { ref: string }) => store[result.ref]),
     size,

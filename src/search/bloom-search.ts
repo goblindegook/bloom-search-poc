@@ -22,9 +22,14 @@ export async function getBloomSearch(): Promise<SearchBackend> {
     bs.load(raw.index)
     size = raw.size
     gzippedSize = raw.gzippedSize
+    isLoading = false
   }
 
   return {
+    isLoading,
+    name: 'bloom-search',
+    title: 'Bloom Search',
+    url: 'https://www.npmjs.com/package/@pacote/bloom-search',
     search: (terms) => bs.search(terms).map((result) => result.file),
     size,
     gzippedSize,

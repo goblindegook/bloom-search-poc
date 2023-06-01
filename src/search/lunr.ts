@@ -15,9 +15,14 @@ export async function getLunr(): Promise<SearchBackend> {
     index = lunr.Index.load(raw.index)
     size = raw.size
     gzippedSize = raw.gzippedSize
+    isLoading = false
   }
 
   return {
+    isLoading,
+    name: 'lunr',
+    title: 'Lunr',
+    url: 'https://www.npmjs.com/package/lunr',
     search: (terms) => index.search(terms).map((result) => store[result.ref]),
     size,
     gzippedSize,
