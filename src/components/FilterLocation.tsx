@@ -39,7 +39,7 @@ export const FilterLocation = ({
             'text-emerald-400': searched && hasValue,
             'text-rose-600': searched && !hasValue,
             'text-slate-600': highlighted || !hasValue,
-            'text-white': highlighted && hasValue,
+            'text-white': !highlighted && hasValue,
           })}
         >
           {value}

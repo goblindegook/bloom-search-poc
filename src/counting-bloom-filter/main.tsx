@@ -8,6 +8,7 @@ import { Input } from '../components/Input'
 import { Search } from '../components/Search'
 import { Navigation } from '../components/Navigation'
 import { FilterLocation } from '../components/FilterLocation'
+import { AddedWord } from '../components/AddedWord'
 
 const size = signal<number>(100)
 const hashes = signal<number>(3)
@@ -92,54 +93,35 @@ function App() {
 
             <ul>
               {words.value.map((word, index) => {
-                const baseClass =
-                  'border focus:outline-none focus:ring-4 focus:ring-gray-200 font-medium text-sm px-4 py-1 mb-2'
-                const highlightClass =
-                  highlighted.value.index === index
-                    ? 'text-white border-yellow-400 bg-yellow-400 hover:bg-yellow-300'
-                    : 'text-gray-900 border-gray-300 bg-white hover:bg-gray-100'
+                const isHighlighted = index === highlighted.value.index
                 return (
-                  <li class="inline whitespace-nowrap">
-                    <button
-                      class={cx(baseClass, 'rounded-l-lg ml-2', highlightClass)}
-                      onClick={(event) => {
-                        if (index === highlighted.value.index) {
-                          highlighted.value = {
-                            word: '',
-                            index: -1,
-                            hashes: [],
-                          }
-                        } else {
-                          highlighted.value = {
+                  <AddedWord
+                    value={word}
+                    highlighted={isHighlighted}
+                    onClick={(event) => {
+                      event.preventDefault()
+                      highlighted.value = isHighlighted
+                        ? { word: '', index: -1, hashes: [] }
+                        : {
                             word,
                             index,
                             hashes: computeHashes(word),
                           }
-                        }
-                        event.preventDefault()
-                      }}
-                    >
-                      {word}
-                    </button>
-                    <button
-                      class={cx(baseClass, 'rounded-r-lg mr-2', highlightClass)}
-                      onClick={(event) => {
-                        const locations = computeHashes(word)
-                        locations.forEach((location) => {
-                          filter.value[location] = filter.value[location] - 1
-                        })
-                        words.value = words.value
-                          .slice(0, index)
-                          .concat(
-                            words.value.slice(index + 1, words.value.length)
-                          )
-                        highlighted.value = { word: '', index: -1, hashes: [] }
-                        event.preventDefault()
-                      }}
-                    >
-                      &times;
-                    </button>
-                  </li>
+                    }}
+                    onRemove={(event) => {
+                      event.preventDefault()
+                      const locations = computeHashes(word)
+                      locations.forEach((location) => {
+                        filter.value[location] = filter.value[location] - 1
+                      })
+                      words.value = words.value
+                        .slice(0, index)
+                        .concat(
+                          words.value.slice(index + 1, words.value.length)
+                        )
+                      highlighted.value = { word: '', index: -1, hashes: [] }
+                    }}
+                  />
                 )
               })}
             </ul>
@@ -151,10 +133,9 @@ function App() {
               label="Search"
               onKeyUp={(event: any) => {
                 const word = event.target.value
-                if (word.length) {
-                  searched.value = { word, hashes: computeHashes(word) }
-                } else {
-                  searched.value = { word, hashes: [] }
+                searched.value = {
+                  word,
+                  hashes: word.length ? computeHashes(word) : [],
                 }
               }}
             >

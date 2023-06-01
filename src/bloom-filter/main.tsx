@@ -8,6 +8,7 @@ import { Input } from '../components/Input'
 import { Search } from '../components/Search'
 import { Navigation } from '../components/Navigation'
 import { FilterLocation } from '../components/FilterLocation'
+import { AddedWord } from '../components/AddedWord'
 
 const size = signal<number>(100)
 const hashes = signal<number>(3)
@@ -84,31 +85,21 @@ function App() {
             />
 
             <ul>
-              {words.value.map((word) => (
-                <li class="inline">
-                  <button
-                    class={cx(
-                      'border focus:outline-none focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-4 py-1 mr-2 mb-2',
-                      highlighted.value.word === word
-                        ? 'text-white border-yellow-400 bg-yellow-400 hover:bg-yellow-300'
-                        : 'text-gray-900 border-gray-300 bg-white hover:bg-gray-100'
-                    )}
+              {words.value.map((word) => {
+                const isHighlighted = highlighted.value.word === word
+                return (
+                  <AddedWord
+                    value={word}
+                    highlighted={isHighlighted}
                     onClick={(event) => {
-                      if (word === highlighted.value.word) {
-                        highlighted.value = { word: '', hashes: [] }
-                      } else {
-                        highlighted.value = {
-                          word,
-                          hashes: computeHashes(word),
-                        }
-                      }
                       event.preventDefault()
+                      highlighted.value = isHighlighted
+                        ? { word: '', hashes: [] }
+                        : { word, hashes: computeHashes(word) }
                     }}
-                  >
-                    {word}
-                  </button>
-                </li>
-              ))}
+                  />
+                )
+              })}
             </ul>
           </div>
 
@@ -118,10 +109,9 @@ function App() {
               label="Search"
               onKeyUp={(event: any) => {
                 const word = event.target.value
-                if (word.length) {
-                  searched.value = { word, hashes: computeHashes(word) }
-                } else {
-                  searched.value = { word, hashes: [] }
+                searched.value = {
+                  word,
+                  hashes: word.length ? computeHashes(word) : [],
                 }
               }}
             >
