@@ -52,7 +52,7 @@ function App() {
               id="size"
               label="Size"
               onChange={(event: any) => {
-                size.value = Number(event.target.value)
+                size.value = parseInt(event.target.value, 10)
                 reset()
               }}
               value={size}
@@ -62,7 +62,7 @@ function App() {
               id="hashes"
               label="Hashes"
               onChange={(event: any) => {
-                hashes.value = Number(event.target.value)
+                hashes.value = parseInt(event.target.value, 10)
                 reset()
               }}
               value={hashes}
