@@ -7,6 +7,7 @@ import cx from 'classnames'
 import { Input } from '../components/Input'
 import { Search } from '../components/Search'
 import { Navigation } from '../components/Navigation'
+import { FilterLocation } from '../components/FilterLocation'
 
 const size = signal<number>(100)
 const hashes = signal<number>(3)
@@ -172,46 +173,16 @@ function App() {
             </Search>
 
             <ul class="grid grid-cols-10 justify-evenly justify-items-center gap-4 m-12">
-              {filter.value.map((value, index) => {
-                const isSearched =
-                  isWordSearched && searched.value.hashes.includes(index)
-                const isHighlighted = highlighted.value.hashes.includes(index)
-                return (
-                  <li
-                    class={cx(
-                      'border-4 rounded-md shadow-md h-12 w-12 relative',
-                      {
-                        'bg-yellow-400': isHighlighted,
-                        'bg-slate-200': value === 0,
-                        'bg-slate-500': !isHighlighted && value > 0,
-                      },
-                      isSearched
-                        ? {
-                            'border-emerald-400': value,
-                            'border-rose-600': !value,
-                          }
-                        : 'border-transparent'
-                    )}
-                  >
-                    <div
-                      class={cx(
-                        'text-center align-middle font-bold text-2xl leading-10',
-                        {
-                          'text-emerald-400': isSearched && value > 0,
-                          'text-rose-600': isSearched && value === 0,
-                          'text-slate-600': isHighlighted || value === 0,
-                          'text-white': !isHighlighted && value > 0,
-                        }
-                      )}
-                    >
-                      {value}
-                    </div>
-                    <div class="absolute shadow-md bottom-0 right-0 rounded-full bg-white p-1 text-xs text-slate-600 text-center align-baseline w-6 h-6 translate-y-1/2 translate-x-1/2">
-                      {index}
-                    </div>
-                  </li>
-                )
-              })}
+              {filter.value.map((value, index) => (
+                <FilterLocation
+                  value={value}
+                  index={index}
+                  highlighted={highlighted.value.hashes.includes(index)}
+                  searched={
+                    isWordSearched && searched.value.hashes.includes(index)
+                  }
+                />
+              ))}
             </ul>
           </div>
         </div>
