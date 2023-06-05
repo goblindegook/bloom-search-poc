@@ -26,6 +26,9 @@ export const Navigation = () => (
       <NavigationItem href="/bloom-search-poc/counting-bloom-filter.html">
         Counting Bloom Filter
       </NavigationItem>
+      <NavigationItem href="/bloom-search-poc/stemmer.html">
+        Stemmer
+      </NavigationItem>
     </ul>
   </nav>
 )

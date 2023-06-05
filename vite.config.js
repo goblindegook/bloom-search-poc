@@ -10,6 +10,7 @@ export default defineConfig({
         main: resolve(__dirname, 'index.html'),
         bloomFilter: resolve(__dirname, 'bloom-filter.html'),
         countingBloomFilter: resolve(__dirname, 'counting-bloom-filter.html'),
+        stemmer: resolve(__dirname, 'stemmer.html'),
       },
       output: '',
     },
