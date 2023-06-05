@@ -13,7 +13,7 @@ export async function getMiniSearch(): Promise<SearchBackend> {
     const raw = await fetchIndex<object>('minisearch')
     index = MiniSearch.loadJSON(JSON.stringify(raw.index), {
       fields: ['file', 'content'],
-      processTerm: (term) => stemmer(term.toLowerCase()),
+      processTerm: (term) => stemmer(term),
     })
     size = raw.size
     gzippedSize = raw.gzippedSize

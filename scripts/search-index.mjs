@@ -31,7 +31,7 @@ function writeJson(path, data) {
 function writeMsgPack(path, data) {
   const serializedData = encode(JSON.parse(JSON.stringify(data)))
   const size = serializedData.byteLength
-  const gzippedSize = gzipSizeSync(serializedData)
+  const gzippedSize = gzipSizeSync(serializedData, { level: 9 })
 
   writeFileSync(
     path,
@@ -61,7 +61,7 @@ const store = files.reduce(
 
 const bloomSearch = new BloomSearch({
   errorRate: 0.001,
-  fields: { file: 2, content: 1 },
+  fields: { file: 1, content: 1 },
   summary: ['file'],
   preprocess: (text) => String(text),
   stopwords: (term) => term.length > 2 && !stopwords.includes(term),
@@ -118,7 +118,7 @@ const miniSearchIndex = new MiniSearch({
   storeFields: ['file'],
   idField: 'file',
   processTerm: (term) => {
-    const processedTerm = stemmer(term.toLowerCase())
+    const processedTerm = stemmer(term)
     return stopwords.includes(processedTerm) ? null : processedTerm
   },
 })
