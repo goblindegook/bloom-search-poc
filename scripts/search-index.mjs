@@ -60,7 +60,7 @@ const store = files.reduce(
 // Bloom Search
 
 const bloomSearch = new BloomSearch({
-  errorRate: 0.001,
+  errorRate: 0.005,
   fields: { file: 1, content: 1 },
   summary: ['file'],
   preprocess: (text) => String(text),
@@ -68,9 +68,11 @@ const bloomSearch = new BloomSearch({
   stemmer,
 })
 
-documents.forEach((document, index) => {
-  reportLatency(`[Bloom Search] Indexed ${document.file}`, () => {
-    bloomSearch.add(index, document)
+reportLatency(`[Bloom Search] Indexed all documents`, () => {
+  documents.forEach((document, index) => {
+    reportLatency(`[Bloom Search] Indexed ${document.file}`, () => {
+      bloomSearch.add(index, document)
+    })
   })
 })
 
@@ -86,9 +88,11 @@ elasticlunrIndex.addField('file')
 elasticlunrIndex.addField('content')
 elasticlunrIndex.saveDocument(false)
 
-documents.forEach((document, index) => {
-  reportLatency(`[Elasticlunr] Indexed ${document.file}`, () => {
-    elasticlunrIndex.addDoc({ index, ...document })
+reportLatency(`[Elasticlunr] Indexed all documents`, () => {
+  documents.forEach((document, index) => {
+    reportLatency(`[Elasticlunr] Indexed ${document.file}`, () => {
+      elasticlunrIndex.addDoc({ index, ...document })
+    })
   })
 })
 
@@ -102,9 +106,11 @@ const lunrIndex = lunr(function () {
   this.field('file', { boost: 2 })
   this.field('content')
 
-  documents.forEach((document, index) => {
-    reportLatency(`[Lunr] Indexed ${document.file}`, () => {
-      this.add({ index, ...document })
+  reportLatency(`[Lunr] Indexed all documents`, () => {
+    documents.forEach((document, index) => {
+      reportLatency(`[Lunr] Indexed ${document.file}`, () => {
+        this.add({ index, ...document })
+      })
     })
   })
 })

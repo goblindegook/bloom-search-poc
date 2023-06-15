@@ -14,7 +14,7 @@ export async function getBloomSearch(): Promise<SearchBackend> {
     isLoading = true
     const raw = await fetchIndex<DocumentIndex<R, keyof R>>('bloom-search')
     bs = new BloomSearch<R, keyof R, never>({
-      errorRate: 0.0001,
+      errorRate: 0.005,
       fields: ['file'],
       summary: ['file'],
       stemmer,
