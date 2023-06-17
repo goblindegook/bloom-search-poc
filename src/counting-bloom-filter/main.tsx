@@ -2,13 +2,14 @@ import './style.css'
 import React from 'preact/compat'
 import { render } from 'preact'
 import { signal } from '@preact/signals'
-import { hashLocations } from '@pacote/bloom-filter/src/hash'
 import cx from 'classnames'
 import { Input } from '../components/Input'
 import { Search } from '../components/Search'
 import { Navigation } from '../components/Navigation'
 import { FilterLocation } from '../components/FilterLocation'
 import { AddedWord } from '../components/AddedWord'
+import { range } from '@pacote/array'
+import { hash } from '../hash'
 
 const size = signal<number>(100)
 const hashes = signal<number>(3)
@@ -25,7 +26,8 @@ const searched = signal<{ word: string; hashes: number[] }>({
 })
 
 function App() {
-  const computeHashes = hashLocations(size.value, hashes.value, 0)
+  const computeHashes = (token: string) =>
+    range(0, hashes.value).map((i) => hash(i, token) % size.value)
 
   const reset = () => {
     words.value = []

@@ -1,4 +1,4 @@
-import { BloomSearch, DocumentIndex } from '@pacote/bloom-search'
+import { BloomSearch, Index } from '@pacote/bloom-search'
 import { stemmer } from 'stemmer'
 import { SearchBackend, fetchIndex } from './search'
 
@@ -12,7 +12,7 @@ let isLoading = false
 export async function getBloomSearch(): Promise<SearchBackend> {
   if (!isLoading && bs == null) {
     isLoading = true
-    const raw = await fetchIndex<DocumentIndex<R, keyof R>>('bloom-search')
+    const raw = await fetchIndex<Index<R, keyof R>>('bloom-search')
     bs = new BloomSearch<R, keyof R, never>({
       errorRate: 0.005,
       fields: ['file'],

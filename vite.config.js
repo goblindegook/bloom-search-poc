@@ -15,4 +15,9 @@ export default defineConfig({
       output: '',
     },
   },
+  server: {
+    fs: {
+      allow: ['..'],
+    },
+  },
 })
