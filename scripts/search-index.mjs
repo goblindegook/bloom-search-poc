@@ -9,12 +9,13 @@ import lunr from 'lunr'
 import MiniSearch from 'minisearch'
 import { encode } from '@msgpack/msgpack'
 import { gzipSizeSync } from 'gzip-size'
+import chalk from 'chalk'
 
 function reportLatency(prefix, callback) {
   const start = new Date()
   callback()
   const latency = new Date() - start
-  console.log(`${prefix} (${latency}ms)`)
+  console.log(`${prefix} (${chalk.green(latency + 'ms')})`)
 }
 
 function writeIndices(name, data) {
@@ -25,7 +26,11 @@ function writeIndices(name, data) {
 function writeJson(path, data) {
   const serializedData = JSON.stringify(data)
   writeFileSync(path, serializedData, { encoding: 'utf8' })
-  console.log(`File written to ${path} (${serializedData.length} bytes)`)
+  console.log(
+    `    File written to ${chalk.cyan(path)} (${chalk.yellow(
+      serializedData.length + ' bytes'
+    )})`
+  )
 }
 
 function writeMsgPack(path, data) {
@@ -39,7 +44,9 @@ function writeMsgPack(path, data) {
   )
 
   console.log(
-    `File written to ${path} (${size} bytes, gzipped ${gzippedSize} bytes)`
+    `    File written to ${chalk.cyan(path)} (${chalk.green(
+      size + ' bytes'
+    )} bytes, gzipped ${chalk.greenBright(gzippedSize + ' bytes')})`
   )
 }
 
@@ -59,6 +66,8 @@ const store = files.reduce(
 
 // Bloom Search
 
+console.log(chalk.magenta(chalk.bold('\nBloom Search')))
+
 const bloomSearch = new BloomSearch({
   errorRate: 0.0005,
   fields: { file: 1, content: 1 },
@@ -68,9 +77,9 @@ const bloomSearch = new BloomSearch({
   stemmer,
 })
 
-reportLatency(`[Bloom Search] Indexed all documents`, () => {
+reportLatency(`\n    Indexed all documents`, () => {
   documents.forEach((document, index) => {
-    reportLatency(`[Bloom Search] Indexed ${document.file}`, () => {
+    reportLatency(`    Indexed ${document.file}`, () => {
       bloomSearch.add(index, document)
     })
   })
@@ -80,6 +89,8 @@ writeIndices('bloom-search', { index: bloomSearch.index })
 
 // Elasticlunr
 
+console.log(chalk.magenta(chalk.bold('\nElasticlunr')))
+
 const elasticlunrIndex = elasticlunr()
 elasticlunr.clearStopWords()
 elasticlunr.addStopWords(stopwords)
@@ -88,9 +99,9 @@ elasticlunrIndex.addField('file')
 elasticlunrIndex.addField('content')
 elasticlunrIndex.saveDocument(false)
 
-reportLatency(`[Elasticlunr] Indexed all documents`, () => {
+reportLatency(`\n    Indexed all documents`, () => {
   documents.forEach((document, index) => {
-    reportLatency(`[Elasticlunr] Indexed ${document.file}`, () => {
+    reportLatency(`    Indexed ${document.file}`, () => {
       elasticlunrIndex.addDoc({ index, ...document })
     })
   })
@@ -100,15 +111,17 @@ writeIndices('elasticlunr', { store, index: elasticlunrIndex })
 
 // Lunr
 
+console.log(chalk.magenta(chalk.bold('\nLunr')))
+
 const lunrIndex = lunr(function () {
   lunr.generateStopWordFilter(stopwords)
   this.ref('index')
   this.field('file', { boost: 2 })
   this.field('content')
 
-  reportLatency(`[Lunr] Indexed all documents`, () => {
+  reportLatency(`\n    Indexed all documents`, () => {
     documents.forEach((document, index) => {
-      reportLatency(`[Lunr] Indexed ${document.file}`, () => {
+      reportLatency(`    Indexed ${document.file}`, () => {
         this.add({ index, ...document })
       })
     })
@@ -118,6 +131,8 @@ const lunrIndex = lunr(function () {
 writeIndices('lunr', { store, index: lunrIndex })
 
 // MiniSearch
+
+console.log(chalk.magenta(chalk.bold('\nMiniSearch')))
 
 const miniSearchIndex = new MiniSearch({
   fields: ['file', 'content'],
@@ -129,7 +144,7 @@ const miniSearchIndex = new MiniSearch({
   },
 })
 
-reportLatency('[MiniSearch] Indexed all documents', () => {
+reportLatency('    Indexed all documents', () => {
   miniSearchIndex.addAll(documents)
 })
 
