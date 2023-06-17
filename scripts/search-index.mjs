@@ -60,7 +60,7 @@ const store = files.reduce(
 // Bloom Search
 
 const bloomSearch = new BloomSearch({
-  errorRate: 0.005,
+  errorRate: 0.0005,
   fields: { file: 1, content: 1 },
   summary: ['file'],
   preprocess: (text) => String(text),
