@@ -29,6 +29,9 @@ export const Navigation = () => (
       <NavigationItem href="/bloom-search-poc/stemmer.html">
         Stemmer
       </NavigationItem>
+      <NavigationItem href="https://github.com/goblindegook/bloom-search-poc">
+        Source Code
+      </NavigationItem>
     </ul>
   </nav>
 )
