@@ -27,7 +27,7 @@ function writeJson(path, data) {
   const serializedData = JSON.stringify(data)
   writeFileSync(path, serializedData, { encoding: 'utf8' })
   console.log(
-    `    File written to ${chalk.cyan(path)} (${chalk.yellow(
+    `  File written to ${chalk.cyan(path)} (${chalk.yellow(
       serializedData.length + ' bytes'
     )})`
   )
@@ -44,7 +44,7 @@ function writeMsgPack(path, data) {
   )
 
   console.log(
-    `    File written to ${chalk.cyan(path)} (${chalk.green(
+    `  File written to ${chalk.cyan(path)} (${chalk.green(
       size + ' bytes'
     )} bytes, gzipped ${chalk.greenBright(gzippedSize + ' bytes')})`
   )
@@ -77,9 +77,9 @@ const bloomSearch = new BloomSearch({
   stemmer,
 })
 
-reportLatency(`\n    Indexed all documents`, () => {
+reportLatency(`\n  Indexed all documents`, () => {
   documents.forEach((document, index) => {
-    reportLatency(`    Indexed ${document.file}`, () => {
+    reportLatency(`  Indexed ${document.file}`, () => {
       bloomSearch.add(index, document)
     })
   })
@@ -99,9 +99,9 @@ elasticlunrIndex.addField('file')
 elasticlunrIndex.addField('content')
 elasticlunrIndex.saveDocument(false)
 
-reportLatency(`\n    Indexed all documents`, () => {
+reportLatency(`\n  Indexed all documents`, () => {
   documents.forEach((document, index) => {
-    reportLatency(`    Indexed ${document.file}`, () => {
+    reportLatency(`  Indexed ${document.file}`, () => {
       elasticlunrIndex.addDoc({ index, ...document })
     })
   })
@@ -119,9 +119,9 @@ const lunrIndex = lunr(function () {
   this.field('file', { boost: 2 })
   this.field('content')
 
-  reportLatency(`\n    Indexed all documents`, () => {
+  reportLatency(`\n  Indexed all documents`, () => {
     documents.forEach((document, index) => {
-      reportLatency(`    Indexed ${document.file}`, () => {
+      reportLatency(`  Indexed ${document.file}`, () => {
         this.add({ index, ...document })
       })
     })
@@ -144,7 +144,7 @@ const miniSearchIndex = new MiniSearch({
   },
 })
 
-reportLatency('    Indexed all documents', () => {
+reportLatency('  Indexed all documents', () => {
   miniSearchIndex.addAll(documents)
 })
 
