@@ -23,7 +23,7 @@
   "dependencies": {
     "@msgpack/msgpack": "^3.0.0-beta2",
     "@pacote/array": "^0.7.1",
-    "@pacote/bloom-search": "^0.16.0",
+    "@pacote/bloom-search": "^0.17.2",
     "@pacote/xxhash": "^0.3.1",
     "@preact/signals": "^1.1.3",
     "@types/lunr": "^2.3.4",
