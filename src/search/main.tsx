@@ -84,7 +84,7 @@ function App() {
                       <ol class="max-w-md space-y-1 text-gray-500 list-decimal list-inside">
                         {r.map((file) => (
                           <li key={file}>
-                            <article>
+                            <article class="inline-block">
                               <a
                                 href={`/bloom-search-poc/documents/${file}`}
                                 class="text-blue-600"
