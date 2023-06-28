@@ -9,13 +9,63 @@ import { getLunr } from './backends/lunr'
 import { getMiniSearch } from './backends/minisearch'
 import { Navigation } from '../components/Navigation'
 import { SearchBackend } from './backends/search'
+import { ExternalLinkIcon } from '../components/Icons'
 
-const latency = signal<Record<string, number>>({})
-const results = signal<Record<string, string[]>>({})
-const backends = signal<SearchBackend[]>([])
+const backends = signal<Record<string, SearchBackend>>({})
+const selectedBackend = signal('elasticlunr')
+const searchTerms = signal('whale')
 
 function kb(size: number): string {
   return (size / 1024).toFixed(2) + ' KB'
+}
+
+type EngineProps = {
+  title: string | React.JSX.Element
+  terms: string
+  backend: SearchBackend
+}
+
+function Engine({ title, terms, backend }: EngineProps) {
+  const start = Number(new Date())
+  const results = terms.length === 0 ? [] : backend.search(terms)
+  const latency = Number(new Date()) - start
+
+  return (
+    <section>
+      <h2 class="text-2xl font-extrabold leading-none tracking-tight pb-2">
+        {title}
+        <a class="text-blue-600" href={backend.url} title={backend.title}>
+          <ExternalLinkIcon class="inline-block align-bottom ml-2 w-5 h-5" />
+        </a>
+      </h2>
+      <p class="text-xs pb-4">
+        {backend.isLoading
+          ? 'Loading...'
+          : `${kb(backend.size)} (${kb(backend.gzippedSize)} gzipped)`}
+      </p>
+      {results.length > 0 && (
+        <>
+          <p class="text-md font-bold pb-4">
+            {results.length} results, {latency}ms
+          </p>
+          <ol class="max-w-md space-y-1 text-gray-500 list-decimal list-inside">
+            {results.map((file) => (
+              <li key={file}>
+                <article class="inline-block">
+                  <a
+                    href={`/bloom-search-poc/documents/${file}`}
+                    class="text-blue-600"
+                  >
+                    {file}
+                  </a>
+                </article>
+              </li>
+            ))}
+          </ol>
+        </>
+      )}
+    </section>
+  )
 }
 
 function App() {
@@ -26,7 +76,10 @@ function App() {
         await getElasticlunr(),
         await getLunr(),
         await getMiniSearch(),
-      ]
+      ].reduce<Record<string, SearchBackend>>(
+        (all, backend) => ({ ...all, [backend.name]: backend }),
+        {}
+      )
     })()
   }, [])
 
@@ -40,66 +93,42 @@ function App() {
         <Search
           id="search"
           label="Search"
-          disabled={backends.value.some(({ isLoading }) => isLoading)}
+          value={searchTerms.value}
+          disabled={Object.values(backends.value).some(
+            ({ isLoading }) => isLoading
+          )}
           onKeyUp={async (event: any) => {
-            const terms = event.target?.value ?? ''
-
-            backends.value.forEach(async ({ name, search }) => {
-              if (terms.length === 0) {
-                results.value = {}
-                return
-              }
-
-              const start = Number(new Date())
-              const r = await search(terms)
-              const finish = Number(new Date())
-              results.value = {
-                ...results.value,
-                [name]: r,
-              }
-              latency.value = { ...latency.value, [name]: finish - start }
-            })
+            searchTerms.value = event.target?.value ?? ''
           }}
         />
-        <section id="results" class="grid grid-cols-4">
-          {backends.value.map(
-            ({ isLoading, name, title, url, size, gzippedSize }) => {
-              const l = latency.value[name] ?? 0
-              const r = results.value[name] ?? []
-              return (
-                <section key={name}>
-                  <h2 class="text-2xl font-extrabold leading-none tracking-tight text-blue-600 pb-2">
-                    <a href={url}>{title}</a>
-                  </h2>
-                  <p class="text-xs pb-4">
-                    {isLoading
-                      ? 'Loading...'
-                      : `${kb(size)} (${kb(gzippedSize)} gzipped)`}
-                  </p>
-                  {r.length > 0 && (
-                    <>
-                      <p class="text-md font-bold pb-4">
-                        {r.length} results, {l}ms
-                      </p>
-                      <ol class="max-w-md space-y-1 text-gray-500 list-decimal list-inside">
-                        {r.map((file) => (
-                          <li key={file}>
-                            <article class="inline-block">
-                              <a
-                                href={`/bloom-search-poc/documents/${file}`}
-                                class="text-blue-600"
-                              >
-                                {file}
-                              </a>
-                            </article>
-                          </li>
-                        ))}
-                      </ol>
-                    </>
-                  )}
-                </section>
-              )
-            }
+        <section id="results" class="grid grid-cols-2">
+          {backends.value['bloom-search'] && (
+            <Engine
+              title={backends.value['bloom-search'].title}
+              terms={searchTerms.value}
+              backend={backends.value['bloom-search']}
+            />
+          )}
+          {backends.value[selectedBackend.value] && (
+            <Engine
+              title={
+                <select
+                  class="text-xl font-extrabold"
+                  value={selectedBackend.value}
+                  onChange={(event: any) => {
+                    selectedBackend.value = event.target?.value
+                  }}
+                >
+                  {Object.values(backends.value)
+                    .filter(({ name }) => name !== 'bloom-search')
+                    .map(({ name, title }) => (
+                      <option value={name}>{title}</option>
+                    ))}
+                </select>
+              }
+              terms={searchTerms.value}
+              backend={backends.value[selectedBackend.value]}
+            />
           )}
         </section>
       </div>
