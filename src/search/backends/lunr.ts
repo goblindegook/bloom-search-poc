@@ -19,7 +19,6 @@ export async function getLunr(): Promise<SearchBackend> {
   }
 
   return {
-    isLoading,
     name: 'lunr',
     title: 'Lunr',
     url: 'https://www.npmjs.com/package/lunr',

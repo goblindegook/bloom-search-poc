@@ -26,7 +26,6 @@ export async function getBloomSearch(): Promise<SearchBackend> {
   }
 
   return {
-    isLoading,
     name: 'bloom-search',
     title: 'Bloom Search',
     url: 'https://www.npmjs.com/package/@pacote/bloom-search',

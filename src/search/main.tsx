@@ -31,7 +31,7 @@ function Engine({ title, terms, backend }: EngineProps) {
   const latency = Number(new Date()) - start
 
   return (
-    <section>
+    <>
       <h2 class="text-2xl font-extrabold leading-none tracking-tight pb-2">
         {title}
         <a class="text-blue-600" href={backend.url} title={backend.title}>
@@ -39,32 +39,28 @@ function Engine({ title, terms, backend }: EngineProps) {
         </a>
       </h2>
       <p class="text-xs pb-4">
-        {backend.isLoading
-          ? 'Loading...'
-          : `${kb(backend.size)} (${kb(backend.gzippedSize)} gzipped)`}
+        {kb(backend.size)} ({kb(backend.gzippedSize)} gzipped)
+      </p>
+      <p class="text-md font-bold pb-4">
+        {results.length} results, {latency}ms
       </p>
       {results.length > 0 && (
-        <>
-          <p class="text-md font-bold pb-4">
-            {results.length} results, {latency}ms
-          </p>
-          <ol class="max-w-md space-y-1 text-gray-500 list-decimal list-inside">
-            {results.map((file) => (
-              <li key={file}>
-                <article class="inline-block">
-                  <a
-                    href={`/bloom-search-poc/documents/${file}`}
-                    class="text-blue-600"
-                  >
-                    {file}
-                  </a>
-                </article>
-              </li>
-            ))}
-          </ol>
-        </>
+        <ol class="max-w-md space-y-1 text-gray-500 list-decimal list-inside">
+          {results.map((file) => (
+            <li key={file}>
+              <article class="inline-block">
+                <a
+                  href={`/bloom-search-poc/documents/${file}`}
+                  class="text-blue-600"
+                >
+                  {file}
+                </a>
+              </article>
+            </li>
+          ))}
+        </ol>
       )}
-    </section>
+    </>
   )
 }
 
@@ -94,42 +90,48 @@ function App() {
           id="search"
           label="Search"
           value={searchTerms.value}
-          disabled={Object.values(backends.value).some(
-            ({ isLoading }) => isLoading
-          )}
+          disabled={!Object.values(backends.value).length}
           onKeyUp={async (event: any) => {
             searchTerms.value = event.target?.value ?? ''
           }}
         />
         <section id="results" class="grid grid-cols-2">
-          {backends.value['bloom-search'] && (
-            <Engine
-              title={backends.value['bloom-search'].title}
-              terms={searchTerms.value}
-              backend={backends.value['bloom-search']}
-            />
-          )}
-          {backends.value[selectedBackend.value] && (
-            <Engine
-              title={
-                <select
-                  class="text-xl font-extrabold"
-                  value={selectedBackend.value}
-                  onChange={(event: any) => {
-                    selectedBackend.value = event.target?.value
-                  }}
-                >
-                  {Object.values(backends.value)
-                    .filter(({ name }) => name !== 'bloom-search')
-                    .map(({ name, title }) => (
-                      <option value={name}>{title}</option>
-                    ))}
-                </select>
-              }
-              terms={searchTerms.value}
-              backend={backends.value[selectedBackend.value]}
-            />
-          )}
+          <section>
+            {backends.value['bloom-search'] ? (
+              <Engine
+                title={backends.value['bloom-search'].title}
+                terms={searchTerms.value}
+                backend={backends.value['bloom-search']}
+              />
+            ) : (
+              'Loading...'
+            )}
+          </section>
+          <section>
+            {backends.value[selectedBackend.value] ? (
+              <Engine
+                title={
+                  <select
+                    class="text-xl font-extrabold"
+                    value={selectedBackend.value}
+                    onChange={(event: any) => {
+                      selectedBackend.value = event.target?.value
+                    }}
+                  >
+                    {Object.values(backends.value)
+                      .filter(({ name }) => name !== 'bloom-search')
+                      .map(({ name, title }) => (
+                        <option value={name}>{title}</option>
+                      ))}
+                  </select>
+                }
+                terms={searchTerms.value}
+                backend={backends.value[selectedBackend.value]}
+              />
+            ) : (
+              'Loading...'
+            )}
+          </section>
         </section>
       </div>
     </>

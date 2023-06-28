@@ -1,7 +1,6 @@
 import { decode } from '@msgpack/msgpack'
 
 export interface SearchBackend {
-  isLoading: boolean
   name: string
   title: string
   url: string

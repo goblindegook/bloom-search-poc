@@ -19,7 +19,6 @@ export async function getElasticlunr(): Promise<SearchBackend> {
   }
 
   return {
-    isLoading,
     name: 'elasticlunr',
     title: 'Elasticlunr',
     url: 'https://www.npmjs.com/package/elasticlunr',

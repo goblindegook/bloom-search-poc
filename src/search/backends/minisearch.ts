@@ -21,7 +21,6 @@ export async function getMiniSearch(): Promise<SearchBackend> {
   }
 
   return {
-    isLoading,
     name: 'minisearch',
     title: 'MiniSearch',
     url: 'https://www.npmjs.com/package/minisearch',
