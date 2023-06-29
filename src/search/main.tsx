@@ -1,6 +1,6 @@
 import './style.css'
-import { render } from 'preact'
-import { useEffect } from 'preact/compat'
+import { ComponentChild, render } from 'preact'
+import { useEffect } from 'preact/hooks'
 import { Search } from '../components/Search'
 import { signal } from '@preact/signals'
 import { getBloomSearch } from './backends/bloom-search'
@@ -20,7 +20,7 @@ function kb(size: number): string {
 }
 
 type EngineProps = {
-  title: string | React.JSX.Element
+  title: ComponentChild
   terms: string
   backend: SearchBackend
 }
