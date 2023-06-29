@@ -1,5 +1,4 @@
 import { ComponentChildren } from 'preact'
-import React from 'preact/compat'
 
 type NavigationItemProps = {
   children: ComponentChildren

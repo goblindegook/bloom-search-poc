@@ -1,5 +1,4 @@
 import './style.css'
-import React from 'preact/compat'
 import { render } from 'preact'
 import { signal } from '@preact/signals'
 import cx from 'classnames'

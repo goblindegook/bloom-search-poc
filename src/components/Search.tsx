@@ -1,8 +1,7 @@
-import { ComponentChildren } from 'preact'
-import React, { HTMLAttributes } from 'preact/compat'
+import { ComponentChildren, ComponentProps } from 'preact'
 import { SearchIcon } from './Icons'
 
-type SearchProps = HTMLAttributes<HTMLInputElement> & {
+type SearchProps = ComponentProps<'input'> & {
   label: string
   children?: ComponentChildren
 }

@@ -1,6 +1,6 @@
 import './style.css'
-import React, { useEffect } from 'preact/compat'
 import { render } from 'preact'
+import { useEffect } from 'preact/compat'
 import { Search } from '../components/Search'
 import { signal } from '@preact/signals'
 import { getBloomSearch } from './backends/bloom-search'
