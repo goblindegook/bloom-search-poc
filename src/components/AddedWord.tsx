@@ -3,8 +3,8 @@ import cx from 'classnames'
 type AddedWordProps = {
   value: string
   highlighted?: boolean
-  onClick(event: React.JSX.TargetedMouseEvent<HTMLButtonElement>): void
-  onRemove?(event: React.JSX.TargetedMouseEvent<HTMLButtonElement>): void
+  onClick(event: Event): void
+  onRemove?(event: Event): void
 }
 
 export const AddedWord = ({

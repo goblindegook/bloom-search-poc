@@ -1,6 +1,7 @@
 import cx from 'classnames'
+import { ComponentProps } from 'preact'
 
-type InputProps = React.JSX.HTMLAttributes<HTMLInputElement> & {
+type InputProps = ComponentProps<'input'> & {
   id: string
   label?: string
   class?: string
