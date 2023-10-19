@@ -1,7 +1,7 @@
 import './style.css'
 import { render } from 'preact'
 import { signal } from '@preact/signals'
-import cx from 'classnames'
+import cx from 'clsx'
 import { Input } from '../components/Input'
 import { Search } from '../components/Search'
 import { Navigation } from '../components/Navigation'

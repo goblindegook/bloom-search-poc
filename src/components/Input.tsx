@@ -1,4 +1,4 @@
-import cx from 'classnames'
+import cx from 'clsx'
 import { ComponentProps } from 'preact'
 
 type InputProps = ComponentProps<'input'> & {

@@ -79,6 +79,9 @@ function App() {
     })()
   }, [])
 
+  const bloomSearch = backends.value['bloom-search']
+  const selected = backends.value[selectedBackend.value]
+
   return (
     <>
       <Navigation />
@@ -99,16 +102,16 @@ function App() {
           <section>
             {backends.value['bloom-search'] ? (
               <Engine
-                title={backends.value['bloom-search'].title}
+                title={bloomSearch.title}
                 terms={searchTerms.value}
-                backend={backends.value['bloom-search']}
+                backend={bloomSearch}
               />
             ) : (
               'Loading...'
             )}
           </section>
           <section>
-            {backends.value[selectedBackend.value] ? (
+            {selected ? (
               <Engine
                 title={
                   <select
@@ -126,7 +129,7 @@ function App() {
                   </select>
                 }
                 terms={searchTerms.value}
-                backend={backends.value[selectedBackend.value]}
+                backend={selected}
               />
             ) : (
               'Loading...'
