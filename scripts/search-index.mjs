@@ -2,7 +2,6 @@
 import { readFileSync, writeFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
 import { stemmer } from 'stemmer'
-import stopwords from 'stopwords-en' assert { type: 'json' }
 import { BloomSearch } from '@pacote/bloom-search'
 import elasticlunr from 'elasticlunr'
 import lunr from 'lunr'
@@ -10,12 +9,14 @@ import MiniSearch from 'minisearch'
 import { encode } from '@msgpack/msgpack'
 import { gzipSizeSync } from 'gzip-size'
 import chalk from 'chalk'
+// import Fuse from 'fuse.js'
+import stopwords from 'stopwords-en' with { type: 'json' }
 
 function reportLatency(prefix, callback) {
   const start = new Date()
   callback()
   const latency = new Date() - start
-  console.log(`${prefix} (${chalk.green(latency + 'ms')})`)
+  console.log(`${prefix} (${chalk.green(`${latency}ms`)})`)
 }
 
 function writeIndices(name, data) {
@@ -27,9 +28,7 @@ function writeJson(path, data) {
   const serializedData = JSON.stringify(data)
   writeFileSync(path, serializedData, { encoding: 'utf8' })
   console.log(
-    `  File written to ${chalk.cyan(path)} (${chalk.yellow(
-      serializedData.length + ' bytes'
-    )})`
+    `  File written to ${chalk.cyan(path)} (${chalk.yellow(`${serializedData.length} bytes`)})`
   )
 }
 
@@ -44,9 +43,7 @@ function writeMsgPack(path, data) {
   )
 
   console.log(
-    `  File written to ${chalk.cyan(path)} (${chalk.green(
-      size + ' bytes'
-    )} bytes, gzipped ${chalk.greenBright(gzippedSize + ' bytes')})`
+    `  File written to ${chalk.cyan(path)} (${chalk.green(`${size} bytes`)} bytes, gzipped ${chalk.greenBright(`${gzippedSize} bytes`)})`
   )
 }
 
@@ -77,7 +74,7 @@ const bloomSearch = new BloomSearch({
   stemmer,
 })
 
-reportLatency(`\n  Indexed all documents`, () => {
+reportLatency("\n  Indexed all documents", () => {
   documents.forEach((document, index) => {
     reportLatency(`  Indexed ${document.file}`, () => {
       bloomSearch.add(index, document)
@@ -99,7 +96,7 @@ elasticlunrIndex.addField('file')
 elasticlunrIndex.addField('content')
 elasticlunrIndex.saveDocument(false)
 
-reportLatency(`\n  Indexed all documents`, () => {
+reportLatency("\n  Indexed all documents", () => {
   documents.forEach((document, index) => {
     reportLatency(`  Indexed ${document.file}`, () => {
       elasticlunrIndex.addDoc({ index, ...document })
@@ -108,6 +105,18 @@ reportLatency(`\n  Indexed all documents`, () => {
 })
 
 writeIndices('elasticlunr', { store, index: elasticlunrIndex })
+
+// Fuse
+
+// console.log(chalk.magenta(chalk.bold('\nFuse')))
+
+// let fuseIndex
+
+// reportLatency("\n  Indexed all documents", () => {
+//   fuseIndex = Fuse.createIndex(['index', 'file', 'content'], documents)
+// })
+
+// writeIndices('fuse', { store, index: fuseIndex })
 
 // Lunr
 
@@ -119,7 +128,7 @@ const lunrIndex = lunr(function () {
   this.field('file', { boost: 2 })
   this.field('content')
 
-  reportLatency(`\n  Indexed all documents`, () => {
+  reportLatency("\n  Indexed all documents", () => {
     documents.forEach((document, index) => {
       reportLatency(`  Indexed ${document.file}`, () => {
         this.add({ index, ...document })

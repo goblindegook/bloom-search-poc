@@ -29,6 +29,8 @@ public/elasticlunr.json
 public/elasticlunr.msgpack
 public/flexsearch.json
 public/flexsearch.msgpack
+public/fuse.json
+public/fuse.msgpack
 public/lunr.json
 public/lunr.msgpack
 public/minisearch.json
