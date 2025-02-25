@@ -37,12 +37,12 @@ jobs:
           cache: 'npm'
       - name: Install dependencies
         run: npm install
-      - name: Build Search
+      - name: Build search index
         run: npm run build:search
-      - name: Build Site
+      - name: Build site
         run: npm run build
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: './dist'
+          publish_dir: ./dist
