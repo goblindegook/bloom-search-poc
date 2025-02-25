@@ -11,6 +11,7 @@ export default defineConfig({
         bloomFilter: resolve(__dirname, 'bloom-filter.html'),
         countingBloomFilter: resolve(__dirname, 'counting-bloom-filter.html'),
         stemmer: resolve(__dirname, 'stemmer.html'),
+        privacy: resolve(__dirname, 'privacy.html'),
       },
       output: '',
     },
