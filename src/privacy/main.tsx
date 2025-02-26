@@ -5,6 +5,7 @@ import { computed, signal } from '@preact/signals'
 import { Navigation } from '../components/Navigation'
 import { faker } from '@faker-js/faker'
 import { BloomSearch } from '@pacote/bloom-search'
+import { Profile } from './Profile'
 
 type Profile = {
   id: string
@@ -33,7 +34,7 @@ function generateSearchIndex(
   const index = new BloomSearch<Profile, keyof Profile>({
     errorRate: 0.000001,
     tokenizer,
-    fields: ['id', 'firstName', 'lastName', 'phoneNumber', 'email', 'address'],
+    fields: ['firstName', 'lastName', 'phoneNumber', 'email', 'address'],
     summary: ['id', 'firstName', 'lastName', 'phoneNumber', 'email'],
   })
   for (const profile of profiles) {
@@ -91,48 +92,6 @@ function toBase64(signatures: Record<number, { filter: Uint32Array }>): string {
   }, '')
 }
 
-type ProfileProps = {
-  id: string
-  firstName: string
-  lastName: string
-  phoneNumber: string
-  email: string
-  address: string
-  signature?: string
-}
-
-function Profile({
-  signature,
-  firstName,
-  lastName,
-  phoneNumber,
-  email,
-  address,
-}: ProfileProps) {
-  return (
-    <div className="border rounded p-4 bg-white shadow relative">
-      {signature ? (
-        <div
-          class="absolute top-0 right-0 m-2 p-2 rounded-full bg-blue-200 hover:cursor-pointer"
-          title={signature}
-        >
-          ✍️
-        </div>
-      ) : (
-        ''
-      )}
-      <h3 className="text-lg font-semibold whitespace-nowrap overflow-hidden text-ellipsis">
-        {firstName} {lastName}
-      </h3>
-      <p className="text-gray-600">📞 {phoneNumber}</p>
-      <p className="text-gray-600">✉️ {email}</p>
-      <p className="text-gray-600 whitespace-nowrap overflow-hidden text-ellipsis">
-        🏠 {address}
-      </p>
-    </div>
-  )
-}
-
 function App() {
   return (
     <>
@@ -141,57 +100,69 @@ function App() {
         <h1 class="text-4xl font-extrabold leading-none tracking-tight text-gray-900 pb-8">
           Privacy
         </h1>
-        <section class="grid grid-cols-3">
-          <section class="col-span-2 bg-gray-100 border rounded shadow">
-            <div class="grid grid-cols-2 px-4 pt-2">
-              <h2 className="text-lg font-semibold p-4">Original</h2>
-              <h2 className="text-lg font-semibold p-4">Stored</h2>
-            </div>
-            <div class="flex flex-col h-screen px-2">
-              <div class="flex-1 min-h-0 overflow-y-auto grid grid-cols-2">
-                <section>
-                  {profiles.value.map((profile) => (
-                    <div key={profile.id} class="m-4 mt-0">
-                      <Profile {...profile} />
-                    </div>
-                  ))}
-                </section>
-                <section>
-                  {Object.values(searchIndex.value.index.documents).map(
-                    ({ summary, signatures }) => (
-                      <div key={summary.id} class="m-4 mt-0">
-                        <Profile
-                          signature={toBase64(signatures)}
-                          {...summary}
-                        />
-                      </div>
-                    )
-                  )}
-                </section>
-              </div>
-            </div>
-          </section>
-          <section class="p-8">
-            <Search
-              id="search"
-              label="Search"
-              value={searchTerms.value}
-              onKeyUp={async (event: any) => {
-                searchTerms.value = event.target?.value ?? ''
-              }}
-            />
-            <section>
-              {Object.values(results.value).length === 0 ? (
-                <p>No results.</p>
-              ) : (
-                Object.values(results.value).map((summary) => (
-                  <div key={summary.id} class="my-4">
-                    <Profile {...summary} />
+
+        <Search
+          id="search"
+          label="Search"
+          value={searchTerms.value}
+          onKeyUp={async (event: any) => {
+            searchTerms.value = event.target?.value ?? ''
+          }}
+        />
+
+        <section class="grid grid-cols-2 bg-gray-100 border rounded shadow">
+          {searchTerms.value.length === 0 ? (
+            <>
+              <section>
+                <h2 className="text-lg font-semibold p-4">Original data</h2>
+                {profiles.value.map((profile) => (
+                  <div key={profile.id} class="m-4 mt-0">
+                    <Profile {...profile} />
                   </div>
-                ))
-              )}
-            </section>
-          </section>
+                ))}
+              </section>
+              <section>
+                <h2 className="text-lg font-semibold p-4">Stored index</h2>
+                {Object.values(searchIndex.value.index.documents).map(
+                  ({ summary, signatures }) => (
+                    <div key={summary.id} class="m-4 mt-0">
+                      <Profile signature={toBase64(signatures)} {...summary} />
+                    </div>
+                  )
+                )}
+              </section>
+            </>
+          ) : (
+            <>
+              <section>
+                <h2 className="text-lg font-semibold p-4">
+                  Results from index
+                </h2>
+                {Object.values(results.value).length === 0 ? (
+                  <p class="p-4">No results.</p>
+                ) : (
+                  Object.values(results.value).map((summary) => (
+                    <div key={summary.id} class="m-4 mt-0">
+                      <Profile {...summary} />
+                    </div>
+                  ))
+                )}
+              </section>
+              <section>
+                <h2 className="text-lg font-semibold p-4">Original data</h2>
+                {Object.values(results.value).map(({ id }) => {
+                  const originalSummary = profiles.value.find(
+                    (summary) => summary.id === id
+                  )
+                  return originalSummary != null ? (
+                    <div key={originalSummary.id} class="m-4 mt-0">
+                      <Profile {...originalSummary} />
+                    </div>
+                  ) : null
+                })}
+              </section>
+            </>
+          )}
         </section>
       </div>
     </>
