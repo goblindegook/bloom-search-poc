@@ -135,31 +135,35 @@ function App() {
           ) : (
             <>
               <section>
-                <h2 className="text-lg font-semibold p-4">
-                  Results from index
-                </h2>
-                {Object.values(results.value).length === 0 ? (
-                  <p class="p-4">No results.</p>
-                ) : (
-                  Object.values(results.value).map((summary) => (
-                    <div key={summary.id} class="m-4 mt-0">
-                      <Profile {...summary} />
-                    </div>
-                  ))
-                )}
-              </section>
-              <section>
                 <h2 className="text-lg font-semibold p-4">Original data</h2>
                 {Object.values(results.value).map(({ id }) => {
                   const originalSummary = profiles.value.find(
                     (summary) => summary.id === id
                   )
                   return originalSummary != null ? (
-                    <div key={originalSummary.id} class="m-4 mt-0">
+                    <div key={originalSummary.id} className="m-4 mt-0">
                       <Profile {...originalSummary} />
                     </div>
                   ) : null
                 })}
+              </section>
+              <section>
+                {Object.values(results.value).length === 0 ? (
+                  <h2 className="text-lg font-semibold p-4">
+                    No results
+                  </h2>
+                ) : (
+                  <>
+                    <h2 className="text-lg font-semibold p-4">
+                      Results from index
+                    </h2>
+                    {Object.values(results.value).map((summary) => (
+                      <div key={summary.id} className="m-4 mt-0">
+                        <Profile {...summary} />
+                      </div>
+                    ))}
+                  </>
+                )}
               </section>
             </>
           )}
