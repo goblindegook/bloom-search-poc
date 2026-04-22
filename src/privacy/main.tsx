@@ -1,13 +1,13 @@
 import './style.css'
-import { render } from 'preact'
-import { Search } from '../components/Search'
-import { computed, signal } from '@preact/signals'
-import { Navigation } from '../components/Navigation'
 import { faker } from '@faker-js/faker'
 import { BloomSearch } from '@pacote/bloom-search'
+import { computed, signal } from '@preact/signals'
+import { render } from 'preact'
+import { Navigation } from '../components/Navigation'
+import { Search } from '../components/Search'
 import { Profile } from './Profile'
 
-type Profile = {
+type UserProfile = {
   id: string
   firstName: string
   lastName: string
@@ -29,9 +29,9 @@ const tokenizer = (text: string): string[] =>
     .split(/\s+/)
 
 function generateSearchIndex(
-  profiles: Profile[]
-): BloomSearch<Profile, keyof Profile> {
-  const index = new BloomSearch<Profile, keyof Profile>({
+  profiles: UserProfile[],
+): BloomSearch<UserProfile, keyof UserProfile> {
+  const index = new BloomSearch<UserProfile, keyof UserProfile>({
     errorRate: 0.000001,
     tokenizer,
     fields: ['firstName', 'lastName', 'phoneNumber', 'email', 'address'],
@@ -46,7 +46,7 @@ function generateSearchIndex(
   return index
 }
 
-function anonymize(profile: Profile): void {
+function anonymize(profile: UserProfile): void {
   const REDACTION = '•'.repeat(8)
   profile.lastName = `${profile.lastName[0]}.`
   profile.phoneNumber =
@@ -56,7 +56,7 @@ function anonymize(profile: Profile): void {
   profile.address = REDACTION
 }
 
-function generateProfile(): Profile {
+function generateProfile(): UserProfile {
   const firstName = faker.person.firstName()
   const lastName = faker.person.lastName()
 
@@ -70,8 +70,8 @@ function generateProfile(): Profile {
   }
 }
 
-function generateProfiles(count: number): Profile[] {
-  const profiles = []
+function generateProfiles(count: number): UserProfile[] {
+  const profiles: UserProfile[] = []
   for (let i = 0; i < count; i++) {
     profiles.push(generateProfile())
   }
@@ -86,7 +86,7 @@ function toBase64(signatures: Record<number, { filter: Uint32Array }>): string {
       btoa(
         Array.from(new Uint8Array(a.buffer))
           .map((byte) => String.fromCharCode(byte))
-          .join('')
+          .join(''),
       )
     )
   }, '')
@@ -105,8 +105,9 @@ function App() {
           id="search"
           label="Search"
           value={searchTerms.value}
-          onKeyUp={async (event: any) => {
-            searchTerms.value = event.target?.value ?? ''
+          onKeyUp={async (event) => {
+            const target = event.target as HTMLInputElement
+            searchTerms.value = target.value ?? ''
           }}
         />
 
@@ -128,7 +129,7 @@ function App() {
                     <div key={summary.id} class="m-4 mt-0">
                       <Profile signature={toBase64(signatures)} {...summary} />
                     </div>
-                  )
+                  ),
                 )}
               </section>
             </>
@@ -138,7 +139,7 @@ function App() {
                 <h2 className="text-lg font-semibold p-4">Original data</h2>
                 {Object.values(results.value).map(({ id }) => {
                   const originalSummary = profiles.value.find(
-                    (summary) => summary.id === id
+                    (summary) => summary.id === id,
                   )
                   return originalSummary != null ? (
                     <div key={originalSummary.id} className="m-4 mt-0">
@@ -149,9 +150,7 @@ function App() {
               </section>
               <section>
                 {Object.values(results.value).length === 0 ? (
-                  <h2 className="text-lg font-semibold p-4">
-                    No results
-                  </h2>
+                  <h2 className="text-lg font-semibold p-4">No results</h2>
                 ) : (
                   <>
                     <h2 className="text-lg font-semibold p-4">
@@ -173,4 +172,5 @@ function App() {
   )
 }
 
+// biome-ignore lint/style/noNonNullAssertion: exists
 render(<App />, document.getElementById('app')!)

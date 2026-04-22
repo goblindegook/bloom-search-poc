@@ -29,7 +29,7 @@ export const FilterLocation = ({
               'border-emerald-400': hasValue,
               'border-rose-600': !hasValue,
             }
-          : 'border-transparent'
+          : 'border-transparent',
       )}
     >
       {typeof value === 'number' && (

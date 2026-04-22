@@ -1,6 +1,6 @@
 import MiniSearch from 'minisearch'
-import { SearchBackend, fetchIndex } from './search'
 import { stemmer } from 'stemmer'
+import { fetchIndex, type SearchBackend } from './search'
 
 let index: MiniSearch
 let size: number

@@ -1,21 +1,21 @@
 #!/usr/bin/env node
-import { readFileSync, writeFileSync, readdirSync } from 'node:fs'
+import { readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { stemmer } from 'stemmer'
+import { encode } from '@msgpack/msgpack'
 import { BloomSearch } from '@pacote/bloom-search'
+import chalk from 'chalk'
 import elasticlunr from 'elasticlunr'
+import Fuse from 'fuse.js'
+import { gzipSizeSync } from 'gzip-size'
 import lunr from 'lunr'
 import MiniSearch from 'minisearch'
-import { encode } from '@msgpack/msgpack'
-import { gzipSizeSync } from 'gzip-size'
-import chalk from 'chalk'
-// import Fuse from 'fuse.js'
+import { stemmer } from 'stemmer'
 import stopwords from 'stopwords-en' with { type: 'json' }
 
 function reportLatency(prefix, callback) {
   const start = new Date()
   callback()
-  const latency = new Date() - start
+  const latency = Date.now() - start
   console.log(`${prefix} (${chalk.green(`${latency}ms`)})`)
 }
 
@@ -28,7 +28,7 @@ function writeJson(path, data) {
   const serializedData = JSON.stringify(data)
   writeFileSync(path, serializedData, { encoding: 'utf8' })
   console.log(
-    `  File written to ${chalk.cyan(path)} (${chalk.yellow(`${serializedData.length} bytes`)})`
+    `  File written to ${chalk.cyan(path)} (${chalk.yellow(`${serializedData.length} bytes`)})`,
   )
 }
 
@@ -39,11 +39,11 @@ function writeMsgPack(path, data) {
 
   writeFileSync(
     path,
-    encode(JSON.parse(JSON.stringify({ size, gzippedSize, ...data })))
+    encode(JSON.parse(JSON.stringify({ size, gzippedSize, ...data }))),
   )
 
   console.log(
-    `  File written to ${chalk.cyan(path)} (${chalk.green(`${size} bytes`)} bytes, gzipped ${chalk.greenBright(`${gzippedSize} bytes`)})`
+    `  File written to ${chalk.cyan(path)} (${chalk.green(`${size} bytes`)} bytes, gzipped ${chalk.greenBright(`${gzippedSize} bytes`)})`,
   )
 }
 
@@ -56,10 +56,10 @@ const documents = files.map((file) => {
   return { file, content }
 })
 
-const store = files.reduce(
-  (all, file, index) => ({ ...all, [index]: file }),
-  {}
-)
+const store = files.reduce((all, file, index) => {
+  all[index] = file
+  return all
+}, {})
 
 // Bloom Search
 
@@ -74,7 +74,7 @@ const bloomSearch = new BloomSearch({
   stemmer,
 })
 
-reportLatency("\n  Indexed all documents", () => {
+reportLatency('\n  Indexed all documents', () => {
   documents.forEach((document, index) => {
     reportLatency(`  Indexed ${document.file}`, () => {
       bloomSearch.add(index, document)
@@ -96,7 +96,7 @@ elasticlunrIndex.addField('file')
 elasticlunrIndex.addField('content')
 elasticlunrIndex.saveDocument(false)
 
-reportLatency("\n  Indexed all documents", () => {
+reportLatency('\n  Indexed all documents', () => {
   documents.forEach((document, index) => {
     reportLatency(`  Indexed ${document.file}`, () => {
       elasticlunrIndex.addDoc({ index, ...document })
@@ -108,15 +108,20 @@ writeIndices('elasticlunr', { store, index: elasticlunrIndex })
 
 // Fuse
 
-// console.log(chalk.magenta(chalk.bold('\nFuse')))
+console.log(chalk.magenta(chalk.bold('\nFuse')))
 
-// let fuseIndex
+let fuseIndex
 
-// reportLatency("\n  Indexed all documents", () => {
-//   fuseIndex = Fuse.createIndex(['index', 'file', 'content'], documents)
-// })
+reportLatency('\n  Indexed all documents', () => {
+  fuseIndex = Fuse.createIndex(
+    ['content'],
+    documents.map((document) => ({
+      content: document.content,
+    })),
+  )
+})
 
-// writeIndices('fuse', { store, index: fuseIndex })
+writeIndices('fuse', { store, index: fuseIndex.toJSON() })
 
 // Lunr
 
@@ -128,7 +133,7 @@ const lunrIndex = lunr(function () {
   this.field('file', { boost: 2 })
   this.field('content')
 
-  reportLatency("\n  Indexed all documents", () => {
+  reportLatency('\n  Indexed all documents', () => {
     documents.forEach((document, index) => {
       reportLatency(`  Indexed ${document.file}`, () => {
         this.add({ index, ...document })

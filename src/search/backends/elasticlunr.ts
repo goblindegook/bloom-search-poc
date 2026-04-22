@@ -1,8 +1,8 @@
-import { Index, SerialisedIndexData } from 'elasticlunr'
-import { SearchBackend, Store, fetchIndex } from './search'
+import { Index, type SerialisedIndexData } from 'elasticlunr'
+import { fetchIndex, type SearchBackend, type Store } from './search'
 
 let store: Store
-let index: Index<{}>
+let index: Index<object>
 let size: number
 let gzippedSize: number
 let isLoading = false
@@ -10,7 +10,7 @@ let isLoading = false
 export async function getElasticlunr(): Promise<SearchBackend> {
   if (!isLoading && (store == null || index == null)) {
     isLoading = true
-    const raw = await fetchIndex<SerialisedIndexData<{}>>('elasticlunr')
+    const raw = await fetchIndex<SerialisedIndexData<object>>('elasticlunr')
     store = raw.store
     index = Index.load(raw.index)
     size = raw.size

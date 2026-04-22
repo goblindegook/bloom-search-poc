@@ -1,13 +1,13 @@
 import './style.css'
-import { render } from 'preact'
+import { range } from '@pacote/array'
 import { signal } from '@preact/signals'
 import cx from 'clsx'
-import { Input } from '../components/Input'
-import { Search } from '../components/Search'
-import { Navigation } from '../components/Navigation'
-import { FilterLocation } from '../components/FilterLocation'
+import { render } from 'preact'
 import { AddedWord } from '../components/AddedWord'
-import { range } from '@pacote/array'
+import { FilterLocation } from '../components/FilterLocation'
+import { Input } from '../components/Input'
+import { Navigation } from '../components/Navigation'
+import { Search } from '../components/Search'
 import { hash } from '../hash'
 
 const size = signal<number>(100)
@@ -35,7 +35,7 @@ function App() {
 
   const isWordSearched = searched.value.word.length > 0
   const isWordFound = searched.value.hashes.every(
-    (index) => filter.value[index]
+    (index) => filter.value[index],
   )
 
   return (
@@ -51,8 +51,9 @@ function App() {
             <Input
               id="size"
               label="Size"
-              onChange={(event: any) => {
-                size.value = parseInt(event.target.value, 10)
+              onChange={(event) => {
+                const target = event.target as HTMLInputElement
+                size.value = parseInt(target.value, 10)
                 reset()
               }}
               value={size}
@@ -61,8 +62,9 @@ function App() {
             <Input
               id="hashes"
               label="Hashes"
-              onChange={(event: any) => {
-                hashes.value = parseInt(event.target.value, 10)
+              onChange={(event) => {
+                const target = event.target as HTMLInputElement
+                hashes.value = parseInt(target.value, 10)
                 reset()
               }}
               value={hashes}
@@ -71,16 +73,17 @@ function App() {
             <Input
               id="add"
               label="Add Text"
-              onKeyUp={(event: any) => {
+              onKeyUp={(event) => {
+                const target = event.target as HTMLInputElement
                 if (event.key === 'Enter') {
-                  const word = event.target.value
+                  const word = target.value
                   const locations = computeHashes(word)
                   words.value = words.value.concat(word)
                   locations.forEach((location) => {
                     filter.value[location] = true
                   })
                   highlighted.value = { word, hashes: locations }
-                  event.target.value = ''
+                  target.value = ''
                 }
               }}
             />
@@ -108,8 +111,9 @@ function App() {
             <Search
               id="search"
               label="Search"
-              onKeyUp={(event: any) => {
-                const word = event.target.value
+              onKeyUp={(event) => {
+                const target = event.target as HTMLInputElement
+                const word = target.value
                 searched.value = {
                   word,
                   hashes: word.length ? computeHashes(word) : [],
@@ -120,7 +124,7 @@ function App() {
                 <div
                   class={cx(
                     'text-white absolute right-2.5 bottom-2.5 font-medium rounded-lg text-md px-4 py-2',
-                    isWordFound ? 'bg-emerald-700' : 'bg-rose-700'
+                    isWordFound ? 'bg-emerald-700' : 'bg-rose-700',
                   )}
                 >
                   {isWordFound ? 'Probably found' : 'Definitely missing'}
@@ -147,4 +151,5 @@ function App() {
   )
 }
 
+// biome-ignore lint/style/noNonNullAssertion: exists
 render(<App />, document.getElementById('app')!)

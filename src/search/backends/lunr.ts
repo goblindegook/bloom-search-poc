@@ -1,5 +1,5 @@
 import lunr from 'lunr'
-import { SearchBackend, Store, fetchIndex } from './search'
+import { fetchIndex, type SearchBackend, type Store } from './search'
 
 let store: Store
 let index: lunr.Index

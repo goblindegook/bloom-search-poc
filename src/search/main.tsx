@@ -1,22 +1,23 @@
 import './style.css'
-import { ComponentChild, render } from 'preact'
-import { useEffect } from 'preact/hooks'
-import { Search } from '../components/Search'
 import { signal } from '@preact/signals'
+import { type ComponentChild, render } from 'preact'
+import { useEffect } from 'preact/hooks'
+import { ExternalLinkIcon } from '../components/Icons'
+import { Navigation } from '../components/Navigation'
+import { Search } from '../components/Search'
 import { getBloomSearch } from './backends/bloom-search'
 import { getElasticlunr } from './backends/elasticlunr'
+import { getFuse } from './backends/fuse'
 import { getLunr } from './backends/lunr'
 import { getMiniSearch } from './backends/minisearch'
-import { Navigation } from '../components/Navigation'
-import { SearchBackend } from './backends/search'
-import { ExternalLinkIcon } from '../components/Icons'
+import type { SearchBackend } from './backends/search'
 
 const backends = signal<Record<string, SearchBackend>>({})
 const selectedBackend = signal('elasticlunr')
 const searchTerms = signal('whale')
 
 function kb(size: number): string {
-  return (size / 1024).toFixed(2) + ' KB'
+  return `${(size / 1024).toFixed(2)} KB`
 }
 
 type EngineProps = {
@@ -26,9 +27,9 @@ type EngineProps = {
 }
 
 function Engine({ title, terms, backend }: EngineProps) {
-  const start = Number(new Date())
+  const start = Date.now()
   const results = terms.length === 0 ? [] : backend.search(terms)
-  const latency = Number(new Date()) - start
+  const latency = Date.now() - start
 
   return (
     <>
@@ -70,12 +71,13 @@ function App() {
       backends.value = [
         await getBloomSearch(),
         await getElasticlunr(),
+        await getFuse(),
         await getLunr(),
         await getMiniSearch(),
-      ].reduce<Record<string, SearchBackend>>(
-        (all, backend) => ({ ...all, [backend.name]: backend }),
-        {}
-      )
+      ].reduce<Record<string, SearchBackend>>((all, backend) => {
+        all[backend.name] = backend
+        return all
+      }, {})
     })()
   }, [])
 
@@ -94,8 +96,9 @@ function App() {
           label="Search"
           value={searchTerms.value}
           disabled={!Object.values(backends.value).length}
-          onKeyUp={async (event: any) => {
-            searchTerms.value = event.target?.value ?? ''
+          onKeyUp={async (event) => {
+            const target = event.target as HTMLInputElement
+            searchTerms.value = target.value ?? ''
           }}
         />
         <section id="results" class="grid grid-cols-2">
@@ -117,8 +120,9 @@ function App() {
                   <select
                     class="text-xl font-extrabold"
                     value={selectedBackend.value}
-                    onChange={(event: any) => {
-                      selectedBackend.value = event.target?.value
+                    onChange={(event) => {
+                      const target = event.target as HTMLSelectElement
+                      selectedBackend.value = target.value
                     }}
                   >
                     {Object.values(backends.value)
@@ -141,4 +145,5 @@ function App() {
   )
 }
 
+// biome-ignore lint/style/noNonNullAssertion: exists
 render(<App />, document.getElementById('app')!)

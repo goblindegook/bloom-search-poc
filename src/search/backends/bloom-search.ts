@@ -1,6 +1,6 @@
-import { BloomSearch, Index } from '@pacote/bloom-search'
+import { BloomSearch, type Index } from '@pacote/bloom-search'
 import { stemmer } from 'stemmer'
-import { SearchBackend, fetchIndex } from './search'
+import { fetchIndex, type SearchBackend } from './search'
 
 type R = { file: string }
 

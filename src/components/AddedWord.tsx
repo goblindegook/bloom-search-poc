@@ -20,13 +20,14 @@ export const AddedWord = ({
   return (
     <li class="inline whitespace-nowrap mr-2">
       <button
+        type="button"
         class={cx(
           baseClass,
           'border px-4',
           highlighted
             ? 'text-white border-yellow-500 bg-yellow-400 hover:bg-yellow-500'
             : 'text-gray-900 border-gray-300 bg-white hover:bg-gray-100',
-          isRemovable ? 'rounded-l-lg' : 'rounded-lg'
+          isRemovable ? 'rounded-l-lg' : 'rounded-lg',
         )}
         onClick={onClick}
       >
@@ -34,12 +35,13 @@ export const AddedWord = ({
       </button>
       {isRemovable && (
         <button
+          type="button"
           class={cx(
             baseClass,
             'border-r border-y rounded-r-lg px-2',
             highlighted
               ? 'text-white border-yellow-500 bg-yellow-400 hover:bg-yellow-500'
-              : 'text-gray-900 border-gray-300 bg-gray-100 hover:bg-gray-200'
+              : 'text-gray-900 border-gray-300 bg-gray-100 hover:bg-gray-200',
           )}
           onClick={onRemove}
         >

@@ -1,9 +1,9 @@
 import './style.css'
-import { render } from 'preact'
 import { signal } from '@preact/signals'
+import { render } from 'preact'
+import { stemmer } from 'stemmer'
 import { Input } from '../components/Input'
 import { Navigation } from '../components/Navigation'
-import { stemmer } from 'stemmer'
 
 const term = signal('example')
 
@@ -18,8 +18,9 @@ function App() {
         <div class="grid grid-cols-[1fr_2rem_1fr] gap-8">
           <Input
             id="term"
-            onKeyUp={(event: any) => {
-              term.value = event.target.value ?? ''
+            onKeyUp={(event) => {
+              const target = event.target as HTMLInputElement
+              term.value = target.value ?? ''
             }}
             value={term}
             type="text"
@@ -34,4 +35,5 @@ function App() {
   )
 }
 
+// biome-ignore lint/style/noNonNullAssertion: exists
 render(<App />, document.getElementById('app')!)

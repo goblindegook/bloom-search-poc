@@ -1,4 +1,4 @@
-import { ComponentChildren, ComponentProps } from 'preact'
+import type { ComponentChildren, ComponentProps } from 'preact'
 import { SearchIcon } from './Icons'
 
 type SearchProps = ComponentProps<'input'> & {
