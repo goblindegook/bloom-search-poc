@@ -194,6 +194,16 @@
     mask: url("./whaling-mask.webp") right bottom / contain no-repeat;
   }
 
+  /* On phones, `contain` shrinks the whole engraving to a sliver. Keep a desktop-like height and crop to the right (the tail). */
+  @media (max-width: 767px) {
+    .hero-art::before {
+      -webkit-mask-size: auto 100%;
+      mask-size: auto 100%;
+      -webkit-mask-position: right -7rem bottom;
+      mask-position: right -7rem bottom;
+    }
+  }
+
   /* Margin column on the left, work on the right. Stacks on small screens. */
   .spread {
     @apply grid gap-x-12 gap-y-10 md:grid-cols-[15rem_1fr];
