@@ -23,8 +23,8 @@
             <p
               class="max-w-[34rem] text-[clamp(1.25rem,2.2vw,1.625rem)] leading-snug"
             >
-              Bloom Search is a JavaScript search library that indexes each
-              document as a few Bloom filters instead of one shared word list.
+              Bloom Search is a JavaScript library that indexes each document as
+              a few compact Bloom filters.
             </p>
             <div class="mt-8 max-w-[34rem]">
               <pre
@@ -445,17 +445,18 @@
               <h2 class="chapter-title">The problem</h2>
               <div class="flow chapter-text">
                 <p>
-                  With no server to ask, search runs in the visitor’s browser
-                  and the index ships with the site. A conventional inverted
-                  index lists every word and every document it appears in. On a
-                  large site that is a lot of bytes before anyone has typed
-                  anything.
+                  Hosting a static website and with no server to ask, search
+                  must run in the visitor’s browser and the index ships with the
+                  site. A conventional inverted index lists every word and every
+                  document it appears in. Even on a medium sized site, it can be
+                  a lot of bytes before anyone has typed anything.
                 </p>
                 <p>
                   Bloom Search is for sites where that cost is too high and a
-                  hosted search service is not an option. It gives up some
-                  accuracy to get a smaller index, and tells you exactly which
-                  kind.
+                  hosted search service is either not an option or an
+                  unnecessary complication. It gives up some accuracy to offer
+                  you a considerably smaller index that you can query even while
+                  offline.
                 </p>
               </div>
             </div>
