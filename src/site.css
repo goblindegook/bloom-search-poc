@@ -212,6 +212,24 @@
     scroll-margin-top: 1rem;
   }
 
+  /* Sticky chapter list in the margin, over the chapters' bands. Its own panel keeps it readable on every band. */
+  .chapter-nav {
+    @apply pointer-events-none absolute inset-y-0 left-0 right-0 z-10 hidden lg:block;
+  }
+
+  .chapter-nav > .wrap {
+    @apply pt-[clamp(3.5rem,9vw,7rem)];
+  }
+
+  .chapter-nav-list {
+    @apply pointer-events-auto;
+  }
+
+  /* The "On this page" list: the same panel on About and Docs, so it reads on any band. */
+  .page-index {
+    @apply sticky top-6 w-[13rem] border border-rule bg-paper p-4;
+  }
+
   .chapter-grid {
     @apply grid gap-x-12 gap-y-6 py-[clamp(3.5rem,9vw,7rem)] lg:grid-cols-[15rem_1fr];
   }
@@ -230,6 +248,7 @@
   }
 
   .label {
+    font-size: 1.15em;
     font-variant-caps: all-small-caps;
     letter-spacing: 0.09em;
     font-weight: 500;
@@ -316,6 +335,7 @@
 
   table.ledger th {
     text-align: left;
+    font-size: 1.15em;
     font-variant-caps: all-small-caps;
     letter-spacing: 0.09em;
     font-weight: 500;

@@ -49,7 +49,7 @@ function Engine({ title, terms, backend }: EngineProps) {
     <section class="min-w-0">
       <h2 class="flex items-baseline gap-3 text-3xl">
         {title}
-        <a class="label text-base" href={backend.url}>
+        <a class="label text-[1.15rem]" href={backend.url}>
           npm
         </a>
       </h2>

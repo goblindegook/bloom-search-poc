@@ -149,8 +149,8 @@ function App() {
       />
 
       <div class="grid gap-x-10 lg:grid-cols-2">
-        <h2 class="label hidden pb-2 text-base lg:block">Original data</h2>
-        <h2 class="label hidden pb-2 text-base lg:block">
+        <h2 class="label hidden pb-2 lg:block">Original data</h2>
+        <h2 class="label hidden pb-2 lg:block">
           {hasQuery ? `Results from index (${rows.length})` : 'Stored index'}
         </h2>
         {hasQuery && rows.length === 0 && (

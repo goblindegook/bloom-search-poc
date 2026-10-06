@@ -19,10 +19,10 @@
       </div>
     </div>
     <main id="main" tabindex="-1" class="focus:outline-none">
-      <div class="wrap pt-10 pb-24">
-        <div class="spread">
-          <aside>
-            <nav aria-label="On this page" class="md:sticky md:top-6">
+      <div class="relative">
+        <nav aria-label="On this page" class="chapter-nav">
+          <div class="wrap h-full">
+            <div class="chapter-nav-list page-index">
               <p class="label pb-2">On this page</p>
               <ol class="space-y-1">
                 <li><a href="#install">Install</a></li>
@@ -33,30 +33,42 @@
                 <li><a href="#options">Options</a></li>
                 <li><a href="#methods">Methods</a></li>
               </ol>
-            </nav>
-          </aside>
-          <div>
-            <div class="flow max-w-[46rem] text-[1.0625rem]">
-              <h2 id="install">Install</h2>
-              <pre
-                class="code"
-                tabindex="0"
-              ><code>npm install @pacote/bloom-search</code></pre>
-              <p>
-                The package ships as ES modules and CommonJS, with TypeScript
-                types. It has no stemmer of its own; the examples below use the
-                <a href="https://www.npmjs.com/package/stemmer">stemmer</a>
-                package.
-              </p>
-              <h2 id="describe">Describe the index</h2>
-              <p>
-                Create the instance in one module, so the build script and the
-                browser cannot drift apart.
-              </p>
-              <pre
-                class="code"
-                tabindex="0"
-              ><code><span class="tok-c">// search.ts</span>
+            </div>
+          </div>
+        </nav>
+        <section id="install" class="chapter">
+          <div class="wrap chapter-grid">
+            <div class="min-w-0">
+              <h2 class="chapter-title">Install</h2>
+              <div class="flow chapter-text">
+                <pre
+                  class="code"
+                  tabindex="0"
+                ><code>npm install @pacote/bloom-search</code></pre>
+                <p>
+                  The package ships as ES modules and CommonJS, with TypeScript
+                  types. It has no stemmer of its own; the examples below use
+                  the
+                  <a href="https://www.npmjs.com/package/stemmer">stemmer</a>
+                  package.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section id="describe" class="chapter bg-paper-2">
+          <div class="wrap chapter-grid">
+            <div class="min-w-0">
+              <h2 class="chapter-title">Describe the index</h2>
+              <div class="flow chapter-text">
+                <p>
+                  Create the instance in one module, so the build script and the
+                  browser cannot drift apart.
+                </p>
+                <pre
+                  class="code"
+                  tabindex="0"
+                ><code><span class="tok-c">// search.ts</span>
 <span class="tok-k">import</span> { BloomSearch } <span class="tok-k">from</span> <span class="tok-s">'@pacote/bloom-search'</span>
 <span class="tok-k">import</span> { stemmer } <span class="tok-k">from</span> <span class="tok-s">'stemmer'</span>
 
@@ -67,237 +79,281 @@
   summary: [<span class="tok-s">'url'</span>, <span class="tok-s">'title'</span>], <span class="tok-c">// everything the index will return</span>
   stemmer,
 })</code></pre>
-              <p>
-                The three type parameters are the document, the fields kept as
-                summary, and the fields indexed.
-              </p>
-              <h2 id="build">Build it</h2>
-              <p>
-                At build time, index your documents and write the index out.
-              </p>
-              <pre
-                class="code"
-                tabindex="0"
-              ><code><span class="tok-k">import</span> { writeFileSync } <span class="tok-k">from</span> <span class="tok-s">'node:fs'</span>
+                <p>
+                  The three type parameters are the document, the fields kept as
+                  summary, and the fields indexed.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section id="build" class="chapter">
+          <div class="wrap chapter-grid">
+            <div class="min-w-0">
+              <h2 class="chapter-title">Build it</h2>
+              <div class="flow chapter-text">
+                <p>
+                  At build time, index your documents and write the index out.
+                </p>
+                <pre
+                  class="code"
+                  tabindex="0"
+                ><code><span class="tok-k">import</span> { writeFileSync } <span class="tok-k">from</span> <span class="tok-s">'node:fs'</span>
 <span class="tok-k">import</span> { search } <span class="tok-k">from</span> <span class="tok-s">'./search'</span>
 
 <span class="tok-k">for</span> (<span class="tok-k">const</span> post <span class="tok-k">of</span> posts) search.add(post.url, post)
 
 writeFileSync(<span class="tok-s">'public/search-index.json'</span>, JSON.stringify(search.index))</code></pre>
-              <p>
-                JSON works. MessagePack gives a smaller file; the demos on this
-                site use it.
-              </p>
-              <h2 id="browser">Search in the browser</h2>
-              <p>Load the index once, then reuse the instance.</p>
-              <pre
-                class="code"
-                tabindex="0"
-              ><code><span class="tok-k">import</span> { search } <span class="tok-k">from</span> <span class="tok-s">'./search'</span>
+                <p>
+                  JSON works. MessagePack gives a smaller file; the demos on
+                  this site use it.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section id="browser" class="chapter bg-paper-2">
+          <div class="wrap chapter-grid">
+            <div class="min-w-0">
+              <h2 class="chapter-title">Search in the browser</h2>
+              <div class="flow chapter-text">
+                <p>Load the index once, then reuse the instance.</p>
+                <pre
+                  class="code"
+                  tabindex="0"
+                ><code><span class="tok-k">import</span> { search } <span class="tok-k">from</span> <span class="tok-s">'./search'</span>
 
 search.load(<span class="tok-k">await</span> (<span class="tok-k">await</span> fetch(<span class="tok-s">'/search-index.json'</span>)).json())
 
 search.search(<span class="tok-s">'whale +ahab -pequod'</span>)
 <span class="tok-c">// =&gt; [{ url: '/moby-dick', title: 'Moby-Dick' }, ...]</span></code></pre>
-              <p>
-                Build and browser must agree on the stemmer, the seed and the
-                tokenizer.
-                <a href="%BASE_URL%#limits">Read the limits</a>
-                before you choose it.
-              </p>
-              <h2 id="queries">Queries</h2>
-              <div class="overflow-x-auto" tabindex="0">
-                <table class="ledger">
-                  <thead>
-                    <tr>
-                      <th scope="col">Write</th>
-                      <th scope="col">Meaning</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td><code>whale</code></td>
-                      <td>Optional. Matching documents rank higher.</td>
-                    </tr>
-                    <tr>
-                      <td><code>+whale</code></td>
-                      <td>Required.</td>
-                    </tr>
-                    <tr>
-                      <td><code>-whale</code></td>
-                      <td>Excluded.</td>
-                    </tr>
-                    <tr>
-                      <td><code>"white whale"</code></td>
-                      <td>
-                        Exact phrase. Needs <code>ngrams</code> of 2 or more, up
-                        to the phrase length.
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+                <p>
+                  Build and browser must agree on the stemmer, the seed and the
+                  tokenizer.
+                  <a href="%BASE_URL%#limits">Read the limits</a>
+                  before you choose it.
+                </p>
               </div>
-              <p>
-                Terms are lowercased and run through your stemmer, exactly like
-                document words.
-              </p>
-              <h2 id="options">Options</h2>
-              <div class="overflow-x-auto" tabindex="0">
-                <table class="ledger">
-                  <thead>
-                    <tr>
-                      <th scope="col">Option</th>
-                      <th scope="col">Default</th>
-                      <th scope="col">What it does</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td><code>fields</code></td>
-                      <td class="!whitespace-normal">required</td>
-                      <td>
-                        Fields to index: an array, or an object of field names
-                        and weights.
-                      </td>
-                    </tr>
-                    <tr>
-                      <td><code>summary</code></td>
-                      <td class="!whitespace-normal">required</td>
-                      <td>
-                        Fields kept in the index and returned in results. Keep
-                        it to what identifies a document.
-                      </td>
-                    </tr>
-                    <tr>
-                      <td><code>errorRate</code></td>
-                      <td class="!whitespace-normal">0.0001</td>
-                      <td>
-                        Target false-positive rate per filter. Lower is more
-                        reliable and larger.
-                      </td>
-                    </tr>
-                    <tr>
-                      <td><code>minSize</code></td>
-                      <td class="!whitespace-normal">0</td>
-                      <td>
-                        Minimum term count used to size a filter. Raise it for
-                        tiny documents.
-                      </td>
-                    </tr>
-                    <tr>
-                      <td><code>ngrams</code></td>
-                      <td class="!whitespace-normal">1</td>
-                      <td>
-                        Also index word sequences up to this length, which
-                        phrase search needs. Roughly multiplies index size by n.
-                      </td>
-                    </tr>
-                    <tr>
-                      <td><code>termFrequencyBuckets</code></td>
-                      <td class="!whitespace-normal">
-                        [1, 2, 3, 4, 8, 16, 32, 64]
-                      </td>
-                      <td>
-                        Frequency thresholds that split a document into filters.
-                      </td>
-                    </tr>
-                    <tr>
-                      <td><code>seed</code></td>
-                      <td class="!whitespace-normal">0x00c0ffee</td>
-                      <td>Hash seed. Build and browser must agree.</td>
-                    </tr>
-                    <tr>
-                      <td><code>preprocess</code></td>
-                      <td class="!whitespace-normal">String</td>
-                      <td>
-                        Turns a field value into text before tokenizing, for
-                        example to strip HTML.
-                      </td>
-                    </tr>
-                    <tr>
-                      <td><code>tokenizer</code></td>
-                      <td class="!whitespace-normal">
-                        lowercase, split on whitespace and hyphens
-                      </td>
-                      <td>Splits text into tokens.</td>
-                    </tr>
-                    <tr>
-                      <td><code>stemmer</code></td>
-                      <td class="!whitespace-normal">none</td>
-                      <td>
-                        Maps a token to its stem. Applied to documents and to
-                        queries.
-                      </td>
-                    </tr>
-                    <tr>
-                      <td><code>stopwords</code></td>
-                      <td class="!whitespace-normal">index everything</td>
-                      <td>
-                        Predicate: return true to index a token, false to drop
-                        it.
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <h2 id="methods">Methods</h2>
-              <div class="overflow-x-auto" tabindex="0">
-                <table class="ledger">
-                  <thead>
-                    <tr>
-                      <th scope="col">Member</th>
-                      <th scope="col">What it does</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td><code>add(ref, document, language?)</code></td>
-                      <td>
-                        Indexes a document under a unique reference. Adding the
-                        same reference again replaces it.
-                      </td>
-                    </tr>
-                    <tr>
-                      <td><code>remove(ref)</code></td>
-                      <td>Drops a document from the index.</td>
-                    </tr>
-                    <tr>
-                      <td><code>search(query, language?)</code></td>
-                      <td>
-                        Returns the summaries of matching documents, best first.
-                      </td>
-                    </tr>
-                    <tr>
-                      <td><code>index</code></td>
-                      <td>
-                        The serializable index: a version number and every
-                        document’s summary and filters.
-                      </td>
-                    </tr>
-                    <tr>
-                      <td><code>load(index)</code></td>
-                      <td>
-                        Replaces the index with one built elsewhere. Throws if
-                        the schema version differs.
-                      </td>
-                    </tr>
-                    <tr>
-                      <td><code>toJSON()</code></td>
-                      <td>Options and index together.</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <p>
-                Every option and method is documented in the
-                <a
-                  href="https://pacotejs.github.io/pacote/modules/_pacote_bloom-search.html"
-                  >API reference</a
-                >.
-              </p>
             </div>
           </div>
-        </div>
+        </section>
+        <section id="queries" class="chapter">
+          <div class="wrap chapter-grid">
+            <div class="min-w-0">
+              <h2 class="chapter-title">Queries</h2>
+              <div class="flow chapter-text">
+                <div class="overflow-x-auto" tabindex="0">
+                  <table class="ledger">
+                    <thead>
+                      <tr>
+                        <th scope="col">Write</th>
+                        <th scope="col">Meaning</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><code>whale</code></td>
+                        <td>Optional. Matching documents rank higher.</td>
+                      </tr>
+                      <tr>
+                        <td><code>+whale</code></td>
+                        <td>Required.</td>
+                      </tr>
+                      <tr>
+                        <td><code>-whale</code></td>
+                        <td>Excluded.</td>
+                      </tr>
+                      <tr>
+                        <td><code>"white whale"</code></td>
+                        <td>
+                          Exact phrase. Needs <code>ngrams</code> of 2 or more,
+                          up to the phrase length.
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <p>
+                  Terms are lowercased and run through your stemmer, exactly
+                  like document words.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section id="options" class="chapter bg-paper-2">
+          <div class="wrap chapter-grid">
+            <div class="min-w-0">
+              <h2 class="chapter-title">Options</h2>
+              <div class="flow chapter-text">
+                <div class="overflow-x-auto" tabindex="0">
+                  <table class="ledger">
+                    <thead>
+                      <tr>
+                        <th scope="col">Option</th>
+                        <th scope="col">Default</th>
+                        <th scope="col">What it does</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><code>fields</code></td>
+                        <td class="!whitespace-normal">required</td>
+                        <td>
+                          Fields to index: an array, or an object of field names
+                          and weights.
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><code>summary</code></td>
+                        <td class="!whitespace-normal">required</td>
+                        <td>
+                          Fields kept in the index and returned in results. Keep
+                          it to what identifies a document.
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><code>errorRate</code></td>
+                        <td class="!whitespace-normal">0.0001</td>
+                        <td>
+                          Target false-positive rate per filter. Lower is more
+                          reliable and larger.
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><code>minSize</code></td>
+                        <td class="!whitespace-normal">0</td>
+                        <td>
+                          Minimum term count used to size a filter. Raise it for
+                          tiny documents.
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><code>ngrams</code></td>
+                        <td class="!whitespace-normal">1</td>
+                        <td>
+                          Also index word sequences up to this length, which
+                          phrase search needs. Roughly multiplies index size by
+                          n.
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><code>termFrequencyBuckets</code></td>
+                        <td class="!whitespace-normal">
+                          [1, 2, 3, 4, 8, 16, 32, 64]
+                        </td>
+                        <td>
+                          Frequency thresholds that split a document into
+                          filters.
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><code>seed</code></td>
+                        <td class="!whitespace-normal">0x00c0ffee</td>
+                        <td>Hash seed. Build and browser must agree.</td>
+                      </tr>
+                      <tr>
+                        <td><code>preprocess</code></td>
+                        <td class="!whitespace-normal">String</td>
+                        <td>
+                          Turns a field value into text before tokenizing, for
+                          example to strip HTML.
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><code>tokenizer</code></td>
+                        <td class="!whitespace-normal">
+                          lowercase, split on whitespace and hyphens
+                        </td>
+                        <td>Splits text into tokens.</td>
+                      </tr>
+                      <tr>
+                        <td><code>stemmer</code></td>
+                        <td class="!whitespace-normal">none</td>
+                        <td>
+                          Maps a token to its stem. Applied to documents and to
+                          queries.
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><code>stopwords</code></td>
+                        <td class="!whitespace-normal">index everything</td>
+                        <td>
+                          Predicate: return true to index a token, false to drop
+                          it.
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section id="methods" class="chapter">
+          <div class="wrap chapter-grid">
+            <div class="min-w-0">
+              <h2 class="chapter-title">Methods</h2>
+              <div class="flow chapter-text">
+                <div class="overflow-x-auto" tabindex="0">
+                  <table class="ledger">
+                    <thead>
+                      <tr>
+                        <th scope="col">Member</th>
+                        <th scope="col">What it does</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><code>add(ref, document, language?)</code></td>
+                        <td>
+                          Indexes a document under a unique reference. Adding
+                          the same reference again replaces it.
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><code>remove(ref)</code></td>
+                        <td>Drops a document from the index.</td>
+                      </tr>
+                      <tr>
+                        <td><code>search(query, language?)</code></td>
+                        <td>
+                          Returns the summaries of matching documents, best
+                          first.
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><code>index</code></td>
+                        <td>
+                          The serializable index: a version number and every
+                          document’s summary and filters.
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><code>load(index)</code></td>
+                        <td>
+                          Replaces the index with one built elsewhere. Throws if
+                          the schema version differs.
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><code>toJSON()</code></td>
+                        <td>Options and index together.</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <p>
+                  Every option and method is documented in the
+                  <a
+                    href="https://pacotejs.github.io/pacote/modules/_pacote_bloom-search.html"
+                    >API reference</a
+                  >.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
     </main>
   </body>

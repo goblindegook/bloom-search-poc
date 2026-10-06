@@ -423,484 +423,504 @@
       </div>
     </div>
     <main id="main" tabindex="-1" class="focus:outline-none">
-      <section id="problem" class="chapter">
-        <div class="wrap chapter-grid">
-          <div class="min-w-0">
-            <h2 class="chapter-title">The problem</h2>
-            <div class="flow chapter-text">
-              <p>
-                With no server to ask, search runs in the visitor’s browser and
-                the index ships with the site. A conventional inverted index
-                lists every word and every document it appears in. On a large
-                site that is a lot of bytes before anyone has typed anything.
-              </p>
-              <p>
-                Bloom Search is for sites where that cost is too high and a
-                hosted search service is not an option. It gives up some
-                accuracy to get a smaller index, and tells you exactly which
-                kind.
-              </p>
+      <div class="relative">
+        <nav aria-label="On this page" class="chapter-nav">
+          <div class="wrap h-full">
+            <div class="chapter-nav-list page-index">
+              <p class="label pb-2">On this page</p>
+              <ol class="space-y-1">
+                <li><a href="#problem">The problem</a></li>
+                <li><a href="#how">How it works</a></li>
+                <li><a href="#gains">What you get</a></li>
+                <li><a href="#limits">Trade-offs</a></li>
+                <li><a href="#alternatives">Alternatives</a></li>
+              </ol>
             </div>
           </div>
-        </div>
-      </section>
-      <section id="how" class="chapter bg-paper-2">
-        <div class="wrap chapter-grid">
-          <div class="min-w-0">
-            <h2 class="chapter-title">How it works</h2>
-            <div class="mt-10">
-              <nav aria-label="Demos">
-                <ul class="grid gap-x-8 sm:grid-cols-2 lg:grid-cols-4">
-                  <li class="border-t border-ink pb-4 pt-3">
-                    <a
-                      href="%BASE_URL%bloom-filter.html"
-                      class="text-xl font-medium no-underline hover:underline"
-                      >Bloom filter</a
-                    >
-                    <p class="mt-1 text-sm text-ink-2">
-                      Add words and see which bits they set.
-                    </p>
-                  </li>
-                  <li class="border-t border-ink pb-4 pt-3">
-                    <a
-                      href="%BASE_URL%counting-bloom-filter.html"
-                      class="text-xl font-medium no-underline hover:underline"
-                      >Counting filter</a
-                    >
-                    <p class="mt-1 text-sm text-ink-2">
-                      The same, with counters, so a word can be removed.
-                    </p>
-                  </li>
-                  <li class="border-t border-ink pb-4 pt-3">
-                    <a
-                      href="%BASE_URL%stemmer.html"
-                      class="text-xl font-medium no-underline hover:underline"
-                      >Stemmer</a
-                    >
-                    <p class="mt-1 text-sm text-ink-2">
-                      What a stemmer does to a word.
-                    </p>
-                  </li>
-                  <li class="border-t border-ink pb-4 pt-3">
-                    <a
-                      href="%BASE_URL%privacy.html"
-                      class="text-xl font-medium no-underline hover:underline"
-                      >Privacy</a
-                    >
-                    <p class="mt-1 text-sm text-ink-2">
-                      What an index keeps about the people in it.
-                    </p>
-                  </li>
-                </ul>
-              </nav>
-            </div>
-            <div class="flow chapter-text">
-              <p>
-                A
-                <a href="https://en.wikipedia.org/wiki/Bloom_filter"
-                  >Bloom filter</a
-                >
-                is a row of bits and a few hash functions. Adding a word sets a
-                few bits. Asking about a word checks the same bits: if any is
-                unset, the word was never added; if all are set, it probably
-                was. <a href="%BASE_URL%bloom-filter.html">Try one by hand</a>,
-                or
-                <a href="%BASE_URL%counting-bloom-filter.html"
-                  >with counters instead of bits</a
-                >, which is what lets a word be removed.
-              </p>
-              <p>
-                Bloom Search keeps a set of filters per document. Adding a
-                document runs its text through five steps. Here is one short
-                passage going through all of them.
-              </p>
-              <figure class="max-w-[44rem]">
-                <div
-                  class="grid grid-cols-[6.5rem_1fr] items-baseline gap-x-4 border-t border-rule py-3"
-                >
-                  <p class="label">Original</p>
-                  <div>
-                    <p class="font-medium">
-                      “There! there again! there she breaches! right ahead! The
-                      White Whale, the White Whale!”
-                    </p>
-                  </div>
-                </div>
-                <div
-                  class="grid grid-cols-[6.5rem_1fr] items-baseline gap-x-4 border-t border-rule py-3"
-                >
-                  <p class="label">Tokens</p>
-                  <div>
-                    <p>
-                      there there again there she breaches right ahead the white
-                      whale the white whale
-                    </p>
-                  </div>
-                </div>
-                <div
-                  class="grid grid-cols-[6.5rem_1fr] items-baseline gap-x-4 border-t border-rule py-3"
-                >
-                  <p class="label">Stopwords</p>
-                  <div>
-                    <p>
-                      <span
-                        ><s class="text-ink-2"
-                          >there<span class="sr-only"> (stop word)</span></s
-                        >
-                      </span><span
-                        ><s class="text-ink-2"
-                          >there<span class="sr-only"> (stop word)</span></s
-                        >
-                      </span><span
-                        ><s class="text-ink-2"
-                          >again<span class="sr-only"> (stop word)</span></s
-                        >
-                      </span><span
-                        ><s class="text-ink-2"
-                          >there<span class="sr-only"> (stop word)</span></s
-                        >
-                      </span><span
-                        ><s class="text-ink-2"
-                          >she<span class="sr-only"> (stop word)</span></s
-                        >
-                      </span><span>breaches </span
-                      ><span
-                        ><s class="text-ink-2"
-                          >right<span class="sr-only"> (stop word)</span></s
-                        >
-                      </span><span
-                        ><s class="text-ink-2"
-                          >ahead<span class="sr-only"> (stop word)</span></s
-                        >
-                      </span><span
-                        ><s class="text-ink-2"
-                          >the<span class="sr-only"> (stop word)</span></s
-                        >
-                      </span><span>white </span><span>whale </span
-                      ><span
-                        ><s class="text-ink-2"
-                          >the<span class="sr-only"> (stop word)</span></s
-                        >
-                      </span><span>white </span><span>whale </span>
-                    </p>
-                    <p class="mt-1 text-sm text-ink-2">
-                      <strong>Stopwords</strong>
-                      are words so common they match almost every document and
-                      say nothing about any of them. Dropping them keeps the
-                      filters small.
-                    </p>
-                  </div>
-                </div>
-                <div
-                  class="grid grid-cols-[6.5rem_1fr] items-baseline gap-x-4 border-t border-rule py-3"
-                >
-                  <p class="label">Stems</p>
-                  <div>
-                    <p>
-                      <span class="mr-3 inline-block"
-                        ><span class="text-ink-2">breaches → </span
-                        ><strong class="font-semibold text-accent"
-                          >breach</strong
-                        ></span
-                      ><span class="mr-3 inline-block">white</span
-                      ><span class="mr-3 inline-block">whale</span
-                      ><span class="mr-3 inline-block">white</span
-                      ><span class="mr-3 inline-block">whale</span>
-                    </p>
-                    <p class="mt-1 text-sm text-ink-2">
-                      <strong>Stemming</strong>
-                      cuts a word back to its root, so “breaches” and
-                      “breaching” both become “breach”. A Bloom filter only
-                      answers for whole words, so stemming is how a search finds
-                      other forms of the word. Bloom Search takes any stemmer
-                      you give it.
-                      <a href="%BASE_URL%stemmer.html"
-                        >See what one does to a word.</a
-                      >
-                    </p>
-                  </div>
-                </div>
-                <div
-                  class="grid grid-cols-[6.5rem_1fr] items-baseline gap-x-4 border-t border-rule py-3"
-                >
-                  <p class="label">Filters</p>
-                  <div>
-                    <div class="space-y-3">
-                      <div>
-                        <p class="mb-1.5 text-sm">
-                          <span class="label">seen 2×</span>
-                          white, whale
-                        </p>
-                        <div
-                          aria-hidden="true"
-                          class="grid grid-cols-[repeat(32,1fr)] pl-px pt-px"
-                        >
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="true"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="true"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="true"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="true"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="false"></div>
-                        </div>
-                      </div>
-                      <div>
-                        <p class="mb-1.5 text-sm">
-                          <span class="label">seen 1×</span>
-                          breach
-                        </p>
-                        <div
-                          aria-hidden="true"
-                          class="grid grid-cols-[repeat(32,1fr)] pl-px pt-px"
-                        >
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="true"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="true"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="false"></div>
-                          <div class="bit" data-set="false"></div>
-                        </div>
-                      </div>
-                      <p class="mt-1 text-sm text-ink-2">
-                        The resulting stems are then counted, weighted by field,
-                        and grouped by how often they occur. Each group becomes
-                        its own Bloom filter.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </figure>
-              <p>
-                A search runs the query through the same steps, then asks every
-                document’s filters about each stem. Which filter answered says
-                roughly how often the word occurs, and that frequency is
-                combined with how rare the word is across the candidates (using
-                tf-idf) to order the results. Tokens are double hashed with
-                xxHash64, so the filters need only two fast hash computations
-                per word.
-              </p>
-              <p>
-                Because the index holds filters and not words, it cannot be read
-                back as text, though it can still answer searches. Only the
-                summary fields you choose are stored in the clear.
-                <a href="%BASE_URL%privacy.html">See what that looks like.</a>
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-      <section id="gains" class="chapter">
-        <div class="wrap chapter-grid">
-          <div class="min-w-0">
-            <h2 class="chapter-title">What you get</h2>
-            <div class="flow chapter-text">
-              <ul class="list-disc space-y-2 pl-5">
-                <li>
-                  <strong>A compact index.</strong>
-                  Size follows how many distinct words each document has and the
-                  error rate you choose.
-                </li>
-                <li>
-                  <strong>No false negatives.</strong>
-                  If a document contains the word, it is returned.
-                </li>
-                <li>
-                  <strong>Query operators.</strong> <code>+word</code> requires,
-                  <code>-word</code>
-                  excludes and
-                  <code>"two words"</code>
-                  matches a phrase.
-                </li>
-                <li>
-                  <strong>Ranking.</strong>
-                  Results come back best first, with weights per field.
-                </li>
-                <li>
-                  <strong>Hooks.</strong>
-                  Plug in your own stemmer, tokenizer, stopword rule and
-                  preprocessing.
-                </li>
-                <li>
-                  <strong>Plain data.</strong>
-                  The index is an object you can write to JSON or MessagePack at
-                  build time and load in the browser.
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-      <section id="limits" class="chapter on-accent">
-        <div class="wrap chapter-grid">
-          <div class="min-w-0">
-            <h2 class="chapter-title">Trade-offs</h2>
-            <div class="flow chapter-text">
-              <ul class="list-disc space-y-3 pl-5">
-                <li>
-                  <strong>False positives.</strong>
-                  A document can match a word it does not contain. At the
-                  default <code>errorRate</code> of 0.0001 that is about one
-                  lookup in ten thousand, per filter. Lower it and the index
-                  grows.
-                </li>
-                <li>
-                  <strong>Whole words only.</strong>
-                  No prefixes, suffixes, substrings or fuzzy matching. A stemmer
-                  recovers some of this (“searching” finds “searched”); the rest
-                  is out of reach.
-                </li>
-                <li>
-                  <strong>Approximate ranking.</strong>
-                  Frequency is known only to its bucket, not exactly.
-                </li>
-                <li>
-                  <strong>It does not scale forever.</strong>
-                  Each document repeats its own vocabulary, whereas an inverted
-                  index shares it.
-                  <a href="https://notpeerreviewed.com/blog/bloom-filters/"
-                    >“Bloom filters are good for search that does not scale”</a
-                  >
-                  puts the crossover near 7,200 documents. Measure with your own
-                  content before you commit.
-                </li>
-                <li>
-                  <strong>Build and browser must agree.</strong>
-                  Same stemmer, same seed, same tokenizer. Change one and you
-                  rebuild the index. The index carries a schema version, and
-                  <code>load()</code>
-                  throws on a mismatch.
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-      <section id="alternatives" class="chapter">
-        <div class="wrap chapter-grid">
-          <div class="min-w-0">
-            <h2 class="chapter-title">Alternatives</h2>
-            <div class="flow chapter-text">
-              <p>
-                The <a href="%BASE_URL%compare.html">comparison</a> measures
-                five libraries on the same corpus. These are the trade-offs
-                behind the numbers.
-              </p>
-              <div class="overflow-x-auto" tabindex="0">
-                <table class="ledger">
-                  <thead>
-                    <tr>
-                      <th scope="col">Library</th>
-                      <th scope="col">Index</th>
-                      <th scope="col">Good for</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>Bloom Search</td>
-                      <td>A set of Bloom filters per document</td>
-                      <td>
-                        Small to medium sites that want ranking and a small
-                        payload.
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <a href="https://www.npmjs.com/package/lunr">Lunr</a>
-                      </td>
-                      <td>Inverted index</td>
-                      <td>
-                        Ranking, field boosting and stemming, when the full
-                        index is affordable.
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <a href="https://www.npmjs.com/package/elasticlunr"
-                          >Elasticlunr</a
-                        >
-                      </td>
-                      <td>Inverted index</td>
-                      <td>
-                        Inspired by Lunr’s approach, with field search and
-                        query-time boosting.
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <a href="https://www.npmjs.com/package/minisearch"
-                          >MiniSearch</a
-                        >
-                      </td>
-                      <td>Inverted index</td>
-                      <td>Prefix and fuzzy matching, with ranking.</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <a href="https://www.npmjs.com/package/fuse.js"
-                          >Fuse.js</a
-                        >
-                      </td>
-                      <td>Bitap algorithm</td>
-                      <td>Fuzzy matching on small data sets.</td>
-                    </tr>
-                  </tbody>
-                </table>
+        </nav>
+
+        <section id="problem" class="chapter">
+          <div class="wrap chapter-grid">
+            <div class="min-w-0">
+              <h2 class="chapter-title">The problem</h2>
+              <div class="flow chapter-text">
+                <p>
+                  With no server to ask, search runs in the visitor’s browser
+                  and the index ships with the site. A conventional inverted
+                  index lists every word and every document it appears in. On a
+                  large site that is a lot of bytes before anyone has typed
+                  anything.
+                </p>
+                <p>
+                  Bloom Search is for sites where that cost is too high and a
+                  hosted search service is not an option. It gives up some
+                  accuracy to get a smaller index, and tells you exactly which
+                  kind.
+                </p>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+        <section id="how" class="chapter bg-paper-2">
+          <div class="wrap chapter-grid">
+            <div class="min-w-0">
+              <h2 class="chapter-title">How it works</h2>
+              <div class="mt-10">
+                <nav aria-label="Demos">
+                  <ul class="grid gap-x-8 sm:grid-cols-2 lg:grid-cols-4">
+                    <li class="border-t border-ink pb-4 pt-3">
+                      <a
+                        href="%BASE_URL%bloom-filter.html"
+                        class="text-xl font-medium no-underline hover:underline"
+                        >Bloom filter</a
+                      >
+                      <p class="mt-1 text-sm text-ink-2">
+                        Add words and see which bits they set.
+                      </p>
+                    </li>
+                    <li class="border-t border-ink pb-4 pt-3">
+                      <a
+                        href="%BASE_URL%counting-bloom-filter.html"
+                        class="text-xl font-medium no-underline hover:underline"
+                        >Counting filter</a
+                      >
+                      <p class="mt-1 text-sm text-ink-2">
+                        The same, with counters, so a word can be removed.
+                      </p>
+                    </li>
+                    <li class="border-t border-ink pb-4 pt-3">
+                      <a
+                        href="%BASE_URL%stemmer.html"
+                        class="text-xl font-medium no-underline hover:underline"
+                        >Stemmer</a
+                      >
+                      <p class="mt-1 text-sm text-ink-2">
+                        What a stemmer does to a word.
+                      </p>
+                    </li>
+                    <li class="border-t border-ink pb-4 pt-3">
+                      <a
+                        href="%BASE_URL%privacy.html"
+                        class="text-xl font-medium no-underline hover:underline"
+                        >Privacy</a
+                      >
+                      <p class="mt-1 text-sm text-ink-2">
+                        What an index keeps about the people in it.
+                      </p>
+                    </li>
+                  </ul>
+                </nav>
+              </div>
+              <div class="flow chapter-text">
+                <p>
+                  A
+                  <a href="https://en.wikipedia.org/wiki/Bloom_filter"
+                    >Bloom filter</a
+                  >
+                  is a row of bits and a few hash functions. Adding a word sets
+                  a few bits. Asking about a word checks the same bits: if any
+                  is unset, the word was never added; if all are set, it
+                  probably was.
+                  <a href="%BASE_URL%bloom-filter.html">Try one by hand</a>, or
+                  <a href="%BASE_URL%counting-bloom-filter.html"
+                    >with counters instead of bits</a
+                  >, which is what lets a word be removed.
+                </p>
+                <p>
+                  Bloom Search keeps a set of filters per document. Adding a
+                  document runs its text through five steps. Here is one short
+                  passage going through all of them.
+                </p>
+                <figure class="max-w-[44rem]">
+                  <div
+                    class="grid grid-cols-[6.5rem_1fr] items-baseline gap-x-4 border-t border-rule py-3"
+                  >
+                    <p class="label">Original</p>
+                    <div>
+                      <p class="font-medium">
+                        “There! there again! there she breaches! right ahead!
+                        The White Whale, the White Whale!”
+                      </p>
+                    </div>
+                  </div>
+                  <div
+                    class="grid grid-cols-[6.5rem_1fr] items-baseline gap-x-4 border-t border-rule py-3"
+                  >
+                    <p class="label">Tokens</p>
+                    <div>
+                      <p>
+                        there there again there she breaches right ahead the
+                        white whale the white whale
+                      </p>
+                    </div>
+                  </div>
+                  <div
+                    class="grid grid-cols-[6.5rem_1fr] items-baseline gap-x-4 border-t border-rule py-3"
+                  >
+                    <p class="label">Stopwords</p>
+                    <div>
+                      <p>
+                        <span
+                          ><s class="text-ink-2"
+                            >there<span class="sr-only"> (stop word)</span></s
+                          >
+                        </span><span
+                          ><s class="text-ink-2"
+                            >there<span class="sr-only"> (stop word)</span></s
+                          >
+                        </span><span
+                          ><s class="text-ink-2"
+                            >again<span class="sr-only"> (stop word)</span></s
+                          >
+                        </span><span
+                          ><s class="text-ink-2"
+                            >there<span class="sr-only"> (stop word)</span></s
+                          >
+                        </span><span
+                          ><s class="text-ink-2"
+                            >she<span class="sr-only"> (stop word)</span></s
+                          >
+                        </span><span>breaches </span
+                        ><span
+                          ><s class="text-ink-2"
+                            >right<span class="sr-only"> (stop word)</span></s
+                          >
+                        </span><span
+                          ><s class="text-ink-2"
+                            >ahead<span class="sr-only"> (stop word)</span></s
+                          >
+                        </span><span
+                          ><s class="text-ink-2"
+                            >the<span class="sr-only"> (stop word)</span></s
+                          >
+                        </span><span>white </span><span>whale </span
+                        ><span
+                          ><s class="text-ink-2"
+                            >the<span class="sr-only"> (stop word)</span></s
+                          >
+                        </span><span>white </span><span>whale </span>
+                      </p>
+                      <p class="mt-1 text-sm text-ink-2">
+                        <strong>Stopwords</strong>
+                        are words so common they match almost every document and
+                        say nothing about any of them. Dropping them keeps the
+                        filters small.
+                      </p>
+                    </div>
+                  </div>
+                  <div
+                    class="grid grid-cols-[6.5rem_1fr] items-baseline gap-x-4 border-t border-rule py-3"
+                  >
+                    <p class="label">Stems</p>
+                    <div>
+                      <p>
+                        <span class="mr-3 inline-block"
+                          ><span class="text-ink-2">breaches → </span
+                          ><strong class="font-semibold text-accent"
+                            >breach</strong
+                          ></span
+                        ><span class="mr-3 inline-block">white</span
+                        ><span class="mr-3 inline-block">whale</span
+                        ><span class="mr-3 inline-block">white</span
+                        ><span class="mr-3 inline-block">whale</span>
+                      </p>
+                      <p class="mt-1 text-sm text-ink-2">
+                        <strong>Stemming</strong>
+                        cuts a word back to its root, so “breaches” and
+                        “breaching” both become “breach”. A Bloom filter only
+                        answers for whole words, so stemming is how a search
+                        finds other forms of the word. Bloom Search takes any
+                        stemmer you give it.
+                        <a href="%BASE_URL%stemmer.html"
+                          >See what one does to a word.</a
+                        >
+                      </p>
+                    </div>
+                  </div>
+                  <div
+                    class="grid grid-cols-[6.5rem_1fr] items-baseline gap-x-4 border-t border-rule py-3"
+                  >
+                    <p class="label">Filters</p>
+                    <div>
+                      <div class="space-y-3">
+                        <div>
+                          <p class="mb-1.5 text-sm">
+                            <span class="label">seen 2×</span>
+                            white, whale
+                          </p>
+                          <div
+                            aria-hidden="true"
+                            class="grid grid-cols-[repeat(32,1fr)] pl-px pt-px"
+                          >
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="true"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="true"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="true"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="true"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="false"></div>
+                          </div>
+                        </div>
+                        <div>
+                          <p class="mb-1.5 text-sm">
+                            <span class="label">seen 1×</span>
+                            breach
+                          </p>
+                          <div
+                            aria-hidden="true"
+                            class="grid grid-cols-[repeat(32,1fr)] pl-px pt-px"
+                          >
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="true"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="true"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="false"></div>
+                            <div class="bit" data-set="false"></div>
+                          </div>
+                        </div>
+                        <p class="mt-1 text-sm text-ink-2">
+                          The resulting stems are then counted, weighted by
+                          field, and grouped by how often they occur. Each group
+                          becomes its own Bloom filter.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </figure>
+                <p>
+                  A search runs the query through the same steps, then asks
+                  every document’s filters about each stem. Which filter
+                  answered says roughly how often the word occurs, and that
+                  frequency is combined with how rare the word is across the
+                  candidates (using tf-idf) to order the results. Tokens are
+                  double hashed with xxHash64, so the filters need only two fast
+                  hash computations per word.
+                </p>
+                <p>
+                  Because the index holds filters and not words, it cannot be
+                  read back as text, though it can still answer searches. Only
+                  the summary fields you choose are stored in the clear.
+                  <a href="%BASE_URL%privacy.html">See what that looks like.</a>
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section id="gains" class="chapter">
+          <div class="wrap chapter-grid">
+            <div class="min-w-0">
+              <h2 class="chapter-title">What you get</h2>
+              <div class="flow chapter-text">
+                <ul class="list-disc space-y-2 pl-5">
+                  <li>
+                    <strong>A compact index.</strong>
+                    Size follows how many distinct words each document has and
+                    the error rate you choose.
+                  </li>
+                  <li>
+                    <strong>No false negatives.</strong>
+                    If a document contains the word, it is returned.
+                  </li>
+                  <li>
+                    <strong>Query operators.</strong>
+                    <code>+word</code>
+                    requires,
+                    <code>-word</code>
+                    excludes and
+                    <code>"two words"</code>
+                    matches a phrase.
+                  </li>
+                  <li>
+                    <strong>Ranking.</strong>
+                    Results come back best first, with weights per field.
+                  </li>
+                  <li>
+                    <strong>Hooks.</strong>
+                    Plug in your own stemmer, tokenizer, stopword rule and
+                    preprocessing.
+                  </li>
+                  <li>
+                    <strong>Plain data.</strong>
+                    The index is an object you can write to JSON or MessagePack
+                    at build time and load in the browser.
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section id="limits" class="chapter on-accent">
+          <div class="wrap chapter-grid">
+            <div class="min-w-0">
+              <h2 class="chapter-title">Trade-offs</h2>
+              <div class="flow chapter-text">
+                <ul class="list-disc space-y-3 pl-5">
+                  <li>
+                    <strong>False positives.</strong>
+                    A document can match a word it does not contain. At the
+                    default <code>errorRate</code> of 0.0001 that is about one
+                    lookup in ten thousand, per filter. Lower it and the index
+                    grows.
+                  </li>
+                  <li>
+                    <strong>Whole words only.</strong>
+                    No prefixes, suffixes, substrings or fuzzy matching. A
+                    stemmer recovers some of this (“searching” finds
+                    “searched”); the rest is out of reach.
+                  </li>
+                  <li>
+                    <strong>Approximate ranking.</strong>
+                    Frequency is known only to its bucket, not exactly.
+                  </li>
+                  <li>
+                    <strong>It does not scale forever.</strong>
+                    Each document repeats its own vocabulary, whereas an
+                    inverted index shares it.
+                    <a href="https://notpeerreviewed.com/blog/bloom-filters/"
+                      >“Bloom filters are good for search that does not scale”</a
+                    >
+                    puts the crossover near 7,200 documents. Measure with your
+                    own content before you commit.
+                  </li>
+                  <li>
+                    <strong>Build and browser must agree.</strong>
+                    Same stemmer, same seed, same tokenizer. Change one and you
+                    rebuild the index. The index carries a schema version, and
+                    <code>load()</code>
+                    throws on a mismatch.
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section id="alternatives" class="chapter">
+          <div class="wrap chapter-grid">
+            <div class="min-w-0">
+              <h2 class="chapter-title">Alternatives</h2>
+              <div class="flow chapter-text">
+                <p>
+                  The <a href="%BASE_URL%compare.html">comparison</a> measures
+                  five libraries on the same corpus. These are the trade-offs
+                  behind the numbers.
+                </p>
+                <div class="overflow-x-auto" tabindex="0">
+                  <table class="ledger">
+                    <thead>
+                      <tr>
+                        <th scope="col">Library</th>
+                        <th scope="col">Index</th>
+                        <th scope="col">Good for</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Bloom Search</td>
+                        <td>A set of Bloom filters per document</td>
+                        <td>
+                          Small to medium sites that want ranking and a small
+                          payload.
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <a href="https://www.npmjs.com/package/lunr">Lunr</a>
+                        </td>
+                        <td>Inverted index</td>
+                        <td>
+                          Ranking, field boosting and stemming, when the full
+                          index is affordable.
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <a href="https://www.npmjs.com/package/elasticlunr"
+                            >Elasticlunr</a
+                          >
+                        </td>
+                        <td>Inverted index</td>
+                        <td>
+                          Inspired by Lunr’s approach, with field search and
+                          query-time boosting.
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <a href="https://www.npmjs.com/package/minisearch"
+                            >MiniSearch</a
+                          >
+                        </td>
+                        <td>Inverted index</td>
+                        <td>Prefix and fuzzy matching, with ranking.</td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <a href="https://www.npmjs.com/package/fuse.js"
+                            >Fuse.js</a
+                          >
+                        </td>
+                        <td>Bitap algorithm</td>
+                        <td>Fuzzy matching on small data sets.</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
     </main>
   </body>
 </html>
