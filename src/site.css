@@ -216,6 +216,11 @@
     @apply grid gap-x-12 gap-y-6 py-[clamp(3.5rem,9vw,7rem)] lg:grid-cols-[15rem_1fr];
   }
 
+  /* The margin column stays empty; each chapter's content sits in the wide column. */
+  .chapter-grid > div {
+    @apply lg:col-start-2;
+  }
+
   .chapter-title {
     @apply max-w-[20ch] text-[clamp(2.25rem,5.5vw,4.5rem)] font-light leading-[0.98] tracking-[-0.03em];
   }
