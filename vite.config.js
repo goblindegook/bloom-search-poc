@@ -23,6 +23,10 @@ export default defineConfig({
   plugins: [partials()],
   build: {
     rollupOptions: {
+      output: {
+        // Keep the shared stylesheet out of any one page's entry chunk, which Vite deletes.
+        manualChunks: (id) => (id.endsWith('site.css') ? 'site' : undefined),
+      },
       input: {
         main: resolve(__dirname, 'index.html'),
         docs: resolve(__dirname, 'docs.html'),
@@ -33,7 +37,6 @@ export default defineConfig({
         stemmer: resolve(__dirname, 'stemmer.html'),
         privacy: resolve(__dirname, 'privacy.html'),
       },
-      output: '',
     },
   },
   server: {
