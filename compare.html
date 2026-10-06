@@ -6,35 +6,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta
       name="description"
-      content="What a Bloom Search index stores about the people it was built from."
+      content="Five client-side search libraries, same twenty novels: results, timings and index sizes."
     >
-    <title>Privacy · Bloom Search</title>
+    <title>Compare · Bloom Search</title>
     <link rel="stylesheet" href="/src/site.css">
   </head>
   <body>
-    <!--include header about-->
+    <!--include header compare-->
     <div class="on-ink">
       <div class="wrap band-title">
-        <h1>Privacy</h1>
+        <h1>Compare</h1>
       </div>
     </div>
     <main id="main" tabindex="-1" class="focus:outline-none">
       <div class="wrap pt-10 pb-24">
-        <!--include demo-nav privacy-->
         <div class="spread">
           <aside>
             <p class="text-sm text-ink-2">
-              Left: 100 generated people. Right: everything the index keeps
-              about them, a redacted summary plus one signature per frequency
-              bucket. A signature cannot be read back into words, but it still
-              answers searches on any field, including redacted ones such as a
-              street name.
+              Twenty public-domain novels, indexed by five libraries. Results
+              and timings are measured in your browser as you type. Index sizes
+              are the files this site serves.
             </p>
           </aside>
           <div id="app"></div>
         </div>
       </div>
     </main>
-    <script type="module" src="/src/privacy/main.tsx"></script>
+    <script type="module" src="/src/search/main.tsx"></script>
   </body>
 </html>

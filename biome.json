@@ -22,5 +22,15 @@
       "quoteStyle": "single",
       "semicolons": "asNeeded"
     }
+  },
+  "html": {
+    "formatter": {
+      "enabled": true
+    }
+  },
+  "css": {
+    "parser": {
+      "tailwindDirectives": true
+    }
   }
 }

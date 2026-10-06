@@ -1,13 +1,111 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Stemmer</title>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+      name="description"
+      content="How a stemmer maps words to the stems Bloom Search indexes."
+    >
+    <title>Stemmer · Bloom Search</title>
+    <link rel="stylesheet" href="/src/site.css">
   </head>
   <body>
-    <main id="app"></main>
-    <script type="module" src="/src/stemmer/main.tsx"></script>
+    <!--include header about-->
+    <div class="on-ink">
+      <div class="wrap band-title">
+        <h1>Stemmer</h1>
+      </div>
+    </div>
+    <main id="main" tabindex="-1" class="focus:outline-none">
+      <div class="wrap pt-10 pb-24">
+        <!--include demo-nav stemmer-->
+        <div class="spread">
+          <aside>
+            <p class="text-sm text-ink-2">
+              The index stores stems, not words, and the query is stemmed the
+              same way. That is how a search for “searching” can find a document
+              that only says “searched”. Bloom Search ships without a stemmer;
+              this demo uses the
+              <a href="https://www.npmjs.com/package/stemmer">stemmer</a>
+              package.
+            </p>
+          </aside>
+          <div>
+            <div class="mb-10 grid items-start gap-x-8 gap-y-6 lg:grid-cols-2">
+              <div>
+                <label for="term" class="label mb-2 block">Word</label>
+                <input
+                  id="term"
+                  class="big-field"
+                  type="text"
+                  value="searching"
+                  placeholder="e.g. whaling"
+                  autocomplete="off"
+                  spellcheck="false"
+                >
+              </div>
+              <div>
+                <p class="label mb-2">Stem</p>
+                <p
+                  id="stem"
+                  role="status"
+                  class="border-2 border-transparent p-4 text-[clamp(1.375rem,3vw,1.875rem)] leading-tight"
+                >
+                  search
+                </p>
+              </div>
+            </div>
+            <table class="ledger max-w-lg">
+              <caption class="label">
+                Examples
+              </caption>
+              <thead>
+                <tr>
+                  <th scope="col">Word</th>
+                  <th scope="col">Stem</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>searching</td>
+                  <td>search</td>
+                </tr>
+                <tr>
+                  <td>searches</td>
+                  <td>search</td>
+                </tr>
+                <tr>
+                  <td>searched</td>
+                  <td>search</td>
+                </tr>
+                <tr>
+                  <td>whales</td>
+                  <td>whale</td>
+                </tr>
+                <tr>
+                  <td>whaling</td>
+                  <td>whale</td>
+                </tr>
+                <tr>
+                  <td>probabilities</td>
+                  <td>probabl</td>
+                </tr>
+                <tr>
+                  <td>indexing</td>
+                  <td>index</td>
+                </tr>
+                <tr>
+                  <td>indexes</td>
+                  <td>index</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script type="module" src="/src/stemmer/main.ts"></script>
   </body>
 </html>

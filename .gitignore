@@ -37,3 +37,7 @@ public/minisearch.json
 public/minisearch.msgpack
 public/wade.json
 public/wade.msgpack
+public/index-sizes.json
+
+.impeccable.md
+.impact/

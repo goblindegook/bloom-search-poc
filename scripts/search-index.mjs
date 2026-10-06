@@ -19,9 +19,15 @@ function reportLatency(prefix, callback) {
   console.log(`${prefix} (${chalk.green(`${latency}ms`)})`)
 }
 
+const sizes = {}
+
 function writeIndices(name, data) {
   writeJson(join('public', `${name}.json`), data)
-  writeMsgPack(join('public', `${name}.msgpack`), data)
+  sizes[name] = writeMsgPack(join('public', `${name}.msgpack`), data)
+  writeFileSync(
+    'public/index-sizes.json',
+    JSON.stringify({ documents: documents.length, words, indexes: sizes }),
+  )
 }
 
 function writeJson(path, data) {
@@ -45,6 +51,8 @@ function writeMsgPack(path, data) {
   console.log(
     `  File written to ${chalk.cyan(path)} (${chalk.green(`${size} bytes`)} bytes, gzipped ${chalk.greenBright(`${gzippedSize} bytes`)})`,
   )
+
+  return { size, gzippedSize }
 }
 
 const documentPath = join('public', 'documents')
@@ -55,6 +63,11 @@ const documents = files.map((file) => {
   const content = readFileSync(join(documentPath, file), 'utf8')
   return { file, content }
 })
+
+const words = documents.reduce(
+  (count, { content }) => count + (content.match(/\S+/g)?.length ?? 0),
+  0,
+)
 
 const store = files.reduce((all, file, index) => {
   all[index] = file

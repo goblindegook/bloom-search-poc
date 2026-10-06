@@ -1,13 +1,29 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Bloom Filter</title>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+      name="description"
+      content="Build a Bloom filter by hand and see why a lookup is either a certain miss or a possible match."
+    >
+    <title>Bloom filter · Bloom Search</title>
+    <link rel="stylesheet" href="/src/site.css">
   </head>
   <body>
-    <main id="app"></main>
+    <!--include header about-->
+    <div class="on-ink">
+      <div class="wrap band-title">
+        <h1>Bloom filter</h1>
+      </div>
+    </div>
+    <main id="main" tabindex="-1" class="focus:outline-none">
+      <div class="wrap pt-10 pb-24">
+        <!--include demo-nav bloom-filter-->
+        <div id="app"></div>
+      </div>
+    </main>
     <script type="module" src="/src/bloom-filter/main.tsx"></script>
   </body>
 </html>

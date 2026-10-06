@@ -1,11 +1,9 @@
-import './style.css'
 import { faker } from '@faker-js/faker'
 import { BloomSearch } from '@pacote/bloom-search'
 import { computed, signal } from '@preact/signals'
-import { render } from 'preact'
-import { Navigation } from '../components/Navigation'
+import { Fragment } from 'preact'
 import { Search } from '../components/Search'
-import { Profile } from './Profile'
+import { mount } from '../site'
 
 type UserProfile = {
   id: string
@@ -71,11 +69,7 @@ function generateProfile(): UserProfile {
 }
 
 function generateProfiles(count: number): UserProfile[] {
-  const profiles: UserProfile[] = []
-  for (let i = 0; i < count; i++) {
-    profiles.push(generateProfile())
-  }
-  return profiles
+  return Array.from({ length: count }, generateProfile)
 }
 
 function toBase64(signatures: Record<number, { filter: Uint32Array }>): string {
@@ -92,85 +86,91 @@ function toBase64(signatures: Record<number, { filter: Uint32Array }>): string {
   }, '')
 }
 
+function Profile({
+  signature,
+  firstName,
+  lastName,
+  phoneNumber,
+  email,
+  address,
+}: UserProfile & { signature?: string }) {
+  return (
+    <article class="border-t border-rule py-3">
+      <h3 class="truncate text-lg font-semibold tracking-normal">
+        {firstName} {lastName}
+      </h3>
+      <dl class="grid grid-cols-[4.5rem_1fr] gap-x-3 text-[0.95rem]">
+        <dt class="label">Phone</dt>
+        <dd class="truncate">{phoneNumber}</dd>
+        <dt class="label">Email</dt>
+        <dd class="truncate">{email}</dd>
+        <dt class="label">Address</dt>
+        <dd class="truncate">{address}</dd>
+        {signature && (
+          <>
+            <dt class="label">Signature</dt>
+            <dd class="readout truncate text-ink-2" title={signature}>
+              {signature}
+            </dd>
+          </>
+        )}
+      </dl>
+    </article>
+  )
+}
+
 function App() {
+  const hasQuery = searchTerms.value.length > 0
+  const originals = new Map(profiles.value.map((p) => [p.id, p]))
+  // One row per person, so each original sits level with its indexed form.
+  const rows = hasQuery
+    ? Object.values(results.value).map((summary) => ({
+        summary,
+        signature: undefined,
+      }))
+    : Object.values(searchIndex.value.index.documents).map(
+        ({ summary, signatures }) => ({
+          summary,
+          signature: toBase64(signatures),
+        }),
+      )
+
   return (
     <>
-      <Navigation />
-      <div class="p-8">
-        <h1 class="text-4xl font-extrabold leading-none tracking-tight text-gray-900 pb-8">
-          Privacy
-        </h1>
+      <Search
+        id="search"
+        label="Search names, phone numbers, emails, addresses"
+        placeholder="e.g. a surname or a street"
+        value={searchTerms.value}
+        onInput={(event) => {
+          const target = event.target as HTMLInputElement
+          searchTerms.value = target.value ?? ''
+        }}
+      />
 
-        <Search
-          id="search"
-          label="Search"
-          value={searchTerms.value}
-          onKeyUp={async (event) => {
-            const target = event.target as HTMLInputElement
-            searchTerms.value = target.value ?? ''
-          }}
-        />
-
-        <section class="grid grid-cols-2 bg-gray-100 border rounded shadow">
-          {searchTerms.value.length === 0 ? (
-            <>
-              <section>
-                <h2 className="text-lg font-semibold p-4">Original data</h2>
-                {profiles.value.map((profile) => (
-                  <div key={profile.id} class="m-4 mt-0">
-                    <Profile {...profile} />
-                  </div>
-                ))}
-              </section>
-              <section>
-                <h2 className="text-lg font-semibold p-4">Stored index</h2>
-                {Object.values(searchIndex.value.index.documents).map(
-                  ({ summary, signatures }) => (
-                    <div key={summary.id} class="m-4 mt-0">
-                      <Profile signature={toBase64(signatures)} {...summary} />
-                    </div>
-                  ),
-                )}
-              </section>
-            </>
-          ) : (
-            <>
-              <section>
-                <h2 className="text-lg font-semibold p-4">Original data</h2>
-                {Object.values(results.value).map(({ id }) => {
-                  const originalSummary = profiles.value.find(
-                    (summary) => summary.id === id,
-                  )
-                  return originalSummary != null ? (
-                    <div key={originalSummary.id} className="m-4 mt-0">
-                      <Profile {...originalSummary} />
-                    </div>
-                  ) : null
-                })}
-              </section>
-              <section>
-                {Object.values(results.value).length === 0 ? (
-                  <h2 className="text-lg font-semibold p-4">No results</h2>
-                ) : (
-                  <>
-                    <h2 className="text-lg font-semibold p-4">
-                      Results from index
-                    </h2>
-                    {Object.values(results.value).map((summary) => (
-                      <div key={summary.id} className="m-4 mt-0">
-                        <Profile {...summary} />
-                      </div>
-                    ))}
-                  </>
-                )}
-              </section>
-            </>
-          )}
-        </section>
+      <div class="grid gap-x-10 lg:grid-cols-2">
+        <h2 class="label hidden pb-2 text-base lg:block">Original data</h2>
+        <h2 class="label hidden pb-2 text-base lg:block">
+          {hasQuery ? `Results from index (${rows.length})` : 'Stored index'}
+        </h2>
+        {hasQuery && rows.length === 0 && (
+          <p class="border-t border-rule pt-3 lg:col-start-2">No matches.</p>
+        )}
+        {rows.map(({ summary, signature }) => (
+          <Fragment key={summary.id}>
+            <div class="min-w-0">
+              <span class="label lg:hidden">Original data</span>
+              <Profile {...(originals.get(summary.id) as UserProfile)} />
+            </div>
+            <div class="min-w-0">
+              <span class="label lg:hidden">Index</span>
+              <Profile signature={signature} {...summary} />
+            </div>
+          </Fragment>
+        ))}
       </div>
     </>
   )
 }
 
-// biome-ignore lint/style/noNonNullAssertion: exists
-render(<App />, document.getElementById('app')!)
+mount(<App />)
