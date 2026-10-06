@@ -1,5 +1,4 @@
-/** @type {import('vite').UserConfig} */
-import { readFileSync } from 'node:fs'
+import { readdirSync, readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { defineConfig } from 'vite'
 
@@ -10,38 +9,38 @@ const partials = () => ({
     order: 'pre',
     handler: (html) =>
       html.replace(/<!--include (\S+) (\S+)-->/g, (_, name, current) =>
-        readFileSync(`partials/${name}.html`, 'utf8').replace(
-          / data-nav="(.*?)"/g,
-          (_, id) => (id === current ? ' aria-current="page"' : ''),
+        readFileSync(
+          resolve(__dirname, `src/partials/${name}.html`),
+          'utf8',
+        ).replace(/ data-nav="(.*?)"/g, (_, id) =>
+          id === current ? ' aria-current="page"' : '',
         ),
       ),
   },
 })
 
+// Pages live in src/, which is the Vite root: every .html file there is a page.
+const root = resolve(__dirname, 'src')
+const pages = Object.fromEntries(
+  readdirSync(root)
+    .filter((file) => file.endsWith('.html'))
+    .map((file) => [file.slice(0, -'.html'.length), resolve(root, file)]),
+)
+
 export default defineConfig({
+  root,
+  publicDir: resolve(__dirname, 'public'),
   base: '/',
   plugins: [partials()],
   build: {
+    outDir: resolve(__dirname, 'dist'),
+    emptyOutDir: true,
     rollupOptions: {
+      input: pages,
       output: {
         // Keep the shared stylesheet out of any one page's entry chunk, which Vite deletes.
         manualChunks: (id) => (id.endsWith('site.css') ? 'site' : undefined),
       },
-      input: {
-        main: resolve(__dirname, 'index.html'),
-        docs: resolve(__dirname, 'docs.html'),
-        showcase: resolve(__dirname, 'showcase.html'),
-        compare: resolve(__dirname, 'compare.html'),
-        bloomFilter: resolve(__dirname, 'bloom-filter.html'),
-        countingBloomFilter: resolve(__dirname, 'counting-bloom-filter.html'),
-        stemmer: resolve(__dirname, 'stemmer.html'),
-        privacy: resolve(__dirname, 'privacy.html'),
-      },
-    },
-  },
-  server: {
-    fs: {
-      allow: ['..'],
     },
   },
 })
