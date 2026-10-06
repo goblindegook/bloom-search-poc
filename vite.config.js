@@ -19,7 +19,7 @@ const partials = () => ({
 })
 
 export default defineConfig({
-  base: '/bloom-search-poc/',
+  base: '/',
   plugins: [partials()],
   build: {
     rollupOptions: {
