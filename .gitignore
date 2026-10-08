@@ -35,6 +35,8 @@ public/lunr.json
 public/lunr.msgpack
 public/minisearch.json
 public/minisearch.msgpack
+public/signature-search.json
+public/signature-search.msgpack
 public/wade.json
 public/wade.msgpack
 public/index-sizes.json

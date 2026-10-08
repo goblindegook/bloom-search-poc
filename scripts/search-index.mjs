@@ -3,6 +3,7 @@ import { readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { encode } from '@msgpack/msgpack'
 import { BloomSearch } from '@pacote/bloom-search'
+import { SignatureSearch } from '@pacote/signature-search'
 import chalk from 'chalk'
 import elasticlunr from 'elasticlunr'
 import Fuse from 'fuse.js'
@@ -96,6 +97,29 @@ reportLatency('\n  Indexed all documents', () => {
 })
 
 writeIndices('bloom-search', { index: bloomSearch.index })
+
+// Signature Search
+
+console.log(chalk.magenta(chalk.bold('\nSignature Search')))
+
+const signatureSearch = new SignatureSearch({
+  errorRate: 0.0005,
+  fields: { file: 1, content: 1 },
+  summary: ['file'],
+  preprocess: (text) => String(text),
+  stopwords: (term) => term.length > 2 && !stopwords.includes(term),
+  stemmer,
+})
+
+reportLatency('\n  Indexed all documents', () => {
+  documents.forEach((document, index) => {
+    reportLatency(`  Indexed ${document.file}`, () => {
+      signatureSearch.add(String(index), document)
+    })
+  })
+})
+
+writeIndices('signature-search', { index: signatureSearch.index })
 
 // Elasticlunr
 

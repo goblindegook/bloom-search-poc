@@ -1,6 +1,10 @@
 import { decode } from '@msgpack/msgpack'
 import { BloomSearch, type Index } from '@pacote/bloom-search'
 import {
+  type Index as SignatureIndex,
+  SignatureSearch,
+} from '@pacote/signature-search'
+import {
   Index as ElasticlunrIndex,
   type SerialisedIndexData,
 } from 'elasticlunr'
@@ -77,6 +81,21 @@ export const LIBRARIES = [
       })
       bs.load(index)
       return (terms) => bs.search(terms).map((result) => result.file)
+    },
+  ),
+  library<SignatureIndex<R, keyof R>>(
+    'signature-search',
+    'Signature Search',
+    '@pacote/signature-search',
+    ({ index }) => {
+      const ss = new SignatureSearch<R, keyof R, never>({
+        errorRate: 0.0005,
+        fields: ['file'],
+        summary: ['file'],
+        stemmer,
+      })
+      ss.load(index)
+      return (terms) => ss.search(terms).map((result) => result.file)
     },
   ),
   library<SerialisedIndexData<object>>(

@@ -808,6 +808,17 @@
               <div class="flow chapter-text">
                 <ul class="list-disc space-y-3 pl-5">
                   <li>
+                    <strong>Superseded.</strong>
+                    <a href="https://signature-search.goblindegook.com"
+                      >Signature Search</a
+                    >
+                    (<code>@pacote/signature-search</code>) does the same job
+                    with Ribbon filters instead of Bloom filters. At the same
+                    error rate its index for this site’s corpus is about a
+                    quarter smaller. New projects should use it; the
+                    trade-offs below apply to both.
+                  </li>
+                  <li>
                     <strong>False positives.</strong>
                     A document can match a word it does not contain. At the
                     default <code>errorRate</code> of 0.0001 that is about one
@@ -853,7 +864,7 @@
               <div class="flow chapter-text">
                 <p>
                   The <a href="%BASE_URL%compare.html">comparison</a> measures
-                  five libraries on the same corpus. These are the trade-offs
+                  six libraries on the same corpus. These are the trade-offs
                   behind the numbers.
                 </p>
                 <div class="overflow-x-auto" tabindex="0">
@@ -867,11 +878,23 @@
                     </thead>
                     <tbody>
                       <tr>
+                        <td>
+                          <a href="https://signature-search.goblindegook.com"
+                            >Signature Search</a
+                          >
+                        </td>
+                        <td>A set of Ribbon filters per document</td>
+                        <td>
+                          What to use instead of Bloom Search: the same
+                          approach with a smaller index.
+                        </td>
+                      </tr>
+                      <tr>
                         <td>Bloom Search</td>
                         <td>A set of Bloom filters per document</td>
                         <td>
-                          Small to medium sites that want ranking and a small
-                          payload.
+                          Superseded by Signature Search; kept for existing
+                          users.
                         </td>
                       </tr>
                       <tr>
